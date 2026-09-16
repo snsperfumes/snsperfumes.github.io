@@ -7,8 +7,10 @@
 <meta name="description" id="metaDesc" content="SNS — Beyond the Senses. Niche fragrances, layering oils and curated sets.">
 <meta property="og:title" content="SNS — Beyond the Senses">
 <meta property="og:type" content="website">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
 <script>
 /* ======================================================================
    ضع هنا رابط الـ Web App بتاع Apps Script (نفس الرابط اللي في لوحة الحسابات)
@@ -21,8 +23,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwlxRSYVcTH1hbiSS-D5ZYj
   --ivory:#f8f5ef; --cream:#fdfbf7; --beige:#ebe3d6; --champ:#d8c39a; --gold:#b8933f; --accent:#c7862b;
   --navy:#101828; --ink:#1c2230; --muted:#6f7480; --line:#e6dfd2; --line2:#efe9de;
   --p:var(--navy); --a:var(--gold); --bg:var(--ivory); --card:var(--cream);
-  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost',system-ui,sans-serif;
-  --serif-ar:'Amiri','Cormorant Garamond',serif; --sans-ar:'Cairo','Tajawal',system-ui,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:system-ui,-apple-system,sans-serif;
+  --serif-ar:'Cormorant Garamond',serif; --sans-ar:'Cairo',system-ui,-apple-system,sans-serif;
   --r:6px; --r2:10px;
   --sh:0 1px 2px rgba(16,24,40,.04),0 10px 30px -18px rgba(16,24,40,.18);
   --sh2:0 24px 50px -22px rgba(16,24,40,.28);
@@ -423,7 +425,7 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 .colorrow{display:flex;align-items:center;gap:10px}
 .colorrow input[type=color]{width:44px;height:34px;border:1px solid var(--line);border-radius:6px;padding:2px;background:#fff;cursor:pointer}
 
-/* ============ RESPONSIVE (بالترتيب الصحيح من الأكبر للأصغر) ============ */
+/* ============ RESPONSIVE ============ */
 @media(max-width:900px){
   .hbar{padding-top:14px;padding-bottom:14px;gap:6px}
   header.scrolled .hbar{padding-top:10px;padding-bottom:10px}
@@ -549,7 +551,6 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
   .mbox{border-radius:6px}
   .modal{padding:8px}
   .setup{margin:30px 14px;padding:20px}
-  /* iOS auto-zooms any input under 16px on focus — keep all form fields at 16px on phones */
   .field input,.field select,.field textarea,.toolbar select,.toolbar input,.promo input,.track .f input{font-size:16px}
 }
 
@@ -783,7 +784,7 @@ const ls={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e)
 let toastT;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400)}
 const SVG={heart:'<svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.5c0 5.4-7.5 10-7.5 10z"/></svg>',wa:'<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1.2-1.3-1.8-1-1 .8a4 4 0 0 1-2.4-2.4l.8-1-1-1.8L9 9.5z"/></svg>',mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',phone:'<svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',ig:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/></svg>'};
 
-/* ============ DEFAULT TEXTS (editable in admin) ============ */
+/* ============ DEFAULT TEXTS ============ */
 const DTX={
   nav_shop:['العطور','Fragrances'],nav_about:['من نحن','About Us'],nav_contact:['تواصل معنا','Contact Us'],nav_track:['حالة الطلب','Order Status'],nav_wish:['المفضلة','Wishlist'],
   menu_title:['القائمة','Menu'],
@@ -839,14 +840,16 @@ const own=b=>api({...b,pin:token});
 const csv=v=>String(v||'').split(',').map(s=>s.trim()).filter(Boolean);
 function normProduct(p){let sizes=[];try{sizes=JSON.parse(p.sizes||'[]')}catch(e){}const images=Array.isArray(p.images)?p.images:(p.image?[p.image]:[]);const cat=LEGACY_CAT[p.category]||p.category||'';
   return {...p,sizes,images,image:images[0]||'',category:cat,kind:p.kind||'perfume',available:String(p.available)!=='0',best:String(p.best)==='1',feat:String(p.feat)==='1',disc:Math.min(90,Math.max(0,n(p.disc))),tags:csv(p.tags),pairs:csv(p.pairs),bundle_items:csv(p.bundle_items),order:n(p.order),created:n(p.created)}}
-/* صور كاش على الجهاز (IndexedDB) عشان الموقع يفتح فوراً */
+/* IndexedDB */
 const idb={open:()=>new Promise((res,rej)=>{const r=indexedDB.open('sns_store',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}),
   async get(k){try{const db=await this.open();return new Promise(res=>{const t=db.transaction('kv').objectStore('kv').get(k);t.onsuccess=()=>res(t.result);t.onerror=()=>res(null)})}catch(e){return null}},
   async set(k,v){try{const db=await this.open();return new Promise(res=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res();t.onerror=()=>res()})}catch(e){}}};
 let imgMap={},imgVer='';
 function applyImages(im){imgMap=im.products||{};heroImg=im.hero||'';aboutImg=im.about_img||'';products.forEach(p=>{const a=imgMap[p.id]||[];p.images=a;p.image=a[0]||''});const r=location.hash.replace(/^#\/?/,'').split('/')[0];if(!['checkout','thanks','track'].includes(r))route();renderCart()}
 async function loadImages(ver){const c=await idb.get('images');if(c&&c.img_ver===ver){applyImages(c);return}if(c)applyImages(c);try{const im=await api({action:'images'});await idb.set('images',im);applyImages(im)}catch(e){}}
+
 function applyData(d){
+  if(!d) return;
   products=(d.products||[]).map(normProduct).sort((a,b)=>a.order-b.order);products.forEach(p=>{const a=imgMap[p.id]||[];p.images=a;p.image=a[0]||''});
   const rc=(d.categories||[]).map(c=>({...c,visible:String(c.visible)!=='0',order:n(c.order)}));catsFromSheet=rc.length>0;cats=(rc.length?rc:DEF_CATS.map(c=>({...c}))).sort((a,b)=>a.order-b.order);
   S={...DEF,...(d.settings||{})};TX={};Object.keys(S).forEach(k=>{if(k.startsWith('tx_'))TX[k.slice(3)]=S[k]});
@@ -854,7 +857,31 @@ function applyData(d){
   if(!lang)lang=S.site_lang==='en'?'en':'ar';
   renderChrome();route();
 }
-async function load(){const c=ls.get('sns_store_cache',null);if(c){applyData(c);loadImages(String(c.img_ver||''))}try{const d=await api({action:'public'});ls.set('sns_store_cache',d);applyData(d);if(!c||String(c.img_ver||'')!==String(d.img_ver||''))loadImages(String(d.img_ver||''))}catch(e){if(!c){$('app').innerHTML=`<div class="wrap"><div class="msg err" style="margin:60px auto;max-width:560px">${tx('err_load')}</div></div>`}}}
+
+async function load(){
+  const c = ls.get('sns_store_cache', null);
+  if (c) {
+    applyData(c);
+    loadImages(String(c.img_ver || ''));
+  } else {
+    cats = DEF_CATS.map(cat => ({...cat}));
+    renderChrome();
+    route();
+  }
+
+  try {
+    const d = await api({action:'public'});
+    ls.set('sns_store_cache', d);
+    applyData(d);
+    if (!c || String(c.img_ver || '') !== String(d.img_ver || '')) {
+      loadImages(String(d.img_ver || ''));
+    }
+  } catch(e) {
+    if(!c && (!products || !products.length)) {
+      $('app').innerHTML=`<div class="wrap"><div class="msg err" style="margin:60px auto;max-width:560px">${tx('err_load')}</div></div>`;
+    }
+  }
+}
 
 /* ============ PRICING ============ */
 const sizeFinal=(p,s)=>p.disc?Math.round(n(s.price)*(1-p.disc/100)):n(s.price);
@@ -864,7 +891,7 @@ function bundleOrig(p){return p.bundle_items.reduce((a,id)=>{const x=products.fi
 function sizeLabel(p,s){return p.kind==='bundle'||!n(s.ml)?tx('set'):`${fmt(s.ml)} ${tx('ml')}`}
 
 /* ============ CHROME ============ */
-function applyTheme(){const r=document.documentElement.style;r.setProperty('--p',S.site_p);r.setProperty('--a',S.site_a);r.setProperty('--bg',S.site_bg);r.setProperty('--sans-ar',`'${S.site_font}','Tajawal',system-ui,sans-serif`);document.body.classList.toggle('fit-contain',S.site_fit==='contain')}
+function applyTheme(){const r=document.documentElement.style;r.setProperty('--p',S.site_p);r.setProperty('--a',S.site_a);r.setProperty('--bg',S.site_bg);r.setProperty('--sans-ar',`'${S.site_font}',system-ui,sans-serif`);document.body.classList.toggle('fit-contain',S.site_fit==='contain')}
 function visibleCats(){return cats.filter(c=>c.visible)}
 function catProducts(c){if(!c)return[];switch(c.mode){case'bestsellers':return products.filter(p=>p.best);case'bundles':return products.filter(p=>p.kind==='bundle');case'oils':return products.filter(p=>p.kind==='oil');case'all':return products;default:return products.filter(p=>p.category===c.id)}}
 function countCat(c){return catProducts(c).length}
@@ -1049,7 +1076,7 @@ function viewThanks(id){const lo=ls.get('sns_last_order',{});const msg=`${tx('tr
   return `<div class="wrap"><div class="track" style="text-align:center;padding:50px 0"><div class="eyebrow">${esc(S.site_brand)}</div><h1 style="font-size:44px;margin:10px 0">${tx('ok_title')}</h1><div class="hair"></div><p class="hint">${tx('ok_sub')}</p><div style="font-family:var(--sans);font-size:28px;letter-spacing:.1em;color:var(--p);margin:6px 0 16px">${esc(id)}</div><p style="color:var(--muted);max-width:460px;margin:0 auto">${tx('ok_msg')}</p>${lo.email?`<p style="color:var(--muted);font-size:13px;margin-top:8px">${tx('ok_email')} <span dir="ltr">${esc(lo.email)}</span></p>`:''}
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px"><a class="btn btn-p" href="#/track/${esc(id)}">${tx('ok_track')}</a>${wa()?`<a class="btn btn-g" href="https://wa.me/${wa()}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${tx('ok_wa')}</a>`:''}</div></div></div>`}
 
-/* ---- ORDER TRACKING (real, via Google Sheet) ---- */
+/* ---- ORDER TRACKING ---- */
 function viewTrack(id){const lo=ls.get('sns_last_order',{});const pre=id||lo.id||'';return `<div class="wrap"><div class="cat-head"><h1>${tx('track_title')}</h1><p>${tx('track_sub')}</p></div><div class="track"><div class="f"><div class="field"><label>${tx('track_no')}</label><input id="tNo" dir="ltr" placeholder="SNS-260912-1234" value="${esc(pre)}"></div><div class="field"><label>${tx('phone')}</label><input id="tPh" dir="ltr" inputmode="tel" value="${esc(lo.phone||'')}" onkeydown="if(event.key==='Enter')doTrack()"></div><button class="btn btn-p" id="tBtn" onclick="doTrack()">${tx('track_btn')}</button></div><div id="tOut"></div></div></div>`}
 async function doTrack(){const id=$('tNo').value.trim().toUpperCase(),ph=$('tPh').value.trim();if(!id||!ph){$('tOut').innerHTML=`<div class="msg err">${tx('req')}</div>`;return}$('tBtn').disabled=true;$('tOut').innerHTML=`<div class="msg">…</div>`;
   try{const o=await api({action:'track',id,phone:ph});renderTrack(o)}catch(e){$('tOut').innerHTML=`<div class="msg err">${e.message==='notfound'?tx('track_notfound'):tx('err_generic')}</div>`}finally{$('tBtn').disabled=false}}
@@ -1074,6 +1101,7 @@ function openAdmin(){renderPList();renderCList();fillProductSelects();fillSite()
 function closeAdmin(){$('adminM').classList.remove('on');document.body.style.overflow='';renderChrome();route()}
 function shrink(file,max,q){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};im.src=r.result};r.readAsDataURL(file)})}
 const rawProduct=p=>({id:p.id,name:p.name,name_en:p.name_en||'',kind:p.kind,category:p.category,badge:p.badge||'',available:p.available?'1':'0',best:p.best?'1':'0',feat:p.feat?'1':'0',disc:p.disc||0,desc:p.desc||'',desc_en:p.desc_en||'',top:p.top||'',mid:p.mid||'',base:p.base||'',sizes:JSON.stringify(p.sizes),tags:p.tags.join(','),pairs:p.pairs.join(','),bundle_items:p.bundle_items.join(','),order:p.order,created:p.created});
+
 /* products */
 let editP=null,pImgs=[],pImgsChanged=false;
 function renderPImgs(){$('pImgs').innerHTML=pImgs.map((im,i)=>`<div><img src="${im}" alt="">${i===0?'<small>رئيسية</small>':''}<button onclick="pImgs.splice(${i},1);pImgsChanged=true;renderPImgs()">×</button></div>`).join('')}
@@ -1095,6 +1123,7 @@ async function pQuick(id,k){const p=products.find(x=>x.id===id);p[k]=!p[k];rende
 async function moveProduct(id,dir){const i=products.findIndex(x=>x.id===id),j=i+dir;if(j<0||j>=products.length)return;const a=products[i],b=products[j];[a.order,b.order]=[b.order,a.order];products.sort((x,y)=>x.order-y.order);renderPList();try{await own({action:'upsert',sheet:'products',row:rawProduct(a)});await own({action:'upsert',sheet:'products',row:rawProduct(b)});ls.set('sns_store_cache',null)}catch(e){toast('خطأ في الترتيب')}}
 function renderPList(){$('pCount').textContent=products.length;$('plist').innerHTML=products.length?products.map((p,i)=>`<div class="pitem ${p.available?'':'off'}"><img src="${p.image||''}" alt=""><div><div class="n">${esc(p.name)} <small style="color:var(--muted)">${p.kind==='bundle'?'باقة':p.kind==='oil'?'زيت':''}</small>${p.best?' <span class="badge gold" style="font-size:9px">Best</span>':''}${p.feat?' <span class="badge" style="font-size:9px">مميز</span>':''}${p.disc?` <span class="badge sale" style="font-size:9px">−${p.disc}%</span>`:''}</div><div class="m">${esc((catById(p.category)||{}).name||'')} · ${p.sizes.map(s=>`${s.ml||'طقم'} ${fmt(s.price)}`).join(' / ')}</div></div>
   <div class="acts"><button onclick="moveProduct('${p.id}',-1)" ${i===0?'disabled':''}>▲</button><button onclick="moveProduct('${p.id}',1)" ${i===products.length-1?'disabled':''}>▼</button><button onclick="editProduct('${p.id}')">تعديل</button><button onclick="pQuick('${p.id}','best')">${p.best?'إلغاء Best':'Best'}</button><button onclick="pQuick('${p.id}','feat')">${p.feat?'إلغاء التمييز':'تمييز'}</button><button onclick="pQuick('${p.id}','available')">${p.available?'إخفاء':'إظهار'}</button><button style="color:#b42318" onclick="delProduct('${p.id}')">حذف</button></div></div>`).join(''):'<p class="hint">لا توجد منتجات بعد</p>'}
+
 /* categories */
 let editC=null,cImg='';
 function resetCatForm(){editC=null;cImg='';['cName','cNameEn','cDesc','cDescEn'].forEach(i=>$(i).value='');$('cMode').value='category';$('cVis').value='1';$('cImgPrev').hidden=true;$('cfTitle').textContent='إضافة فئة';$('cStatus').textContent=''}
@@ -1109,9 +1138,11 @@ async function delCat(id){if(!confirm('حذف الفئة؟ (المنتجات ن�
 async function cQuick(id){const c=catById(id);c.visible=!c.visible;renderCList();try{await seedCats();await own({action:'upsert',sheet:'categories',row:rawCat(c)});ls.set('sns_store_cache',null);renderChrome()}catch(e){c.visible=!c.visible;renderCList()}}
 async function moveCat(id,dir){const i=cats.findIndex(x=>x.id===id),j=i+dir;if(j<0||j>=cats.length)return;const a=cats[i],b=cats[j];[a.order,b.order]=[b.order,a.order];cats.sort((x,y)=>x.order-y.order);renderCList();try{await seedCats();await own({action:'upsert',sheet:'categories',row:rawCat(a)});await own({action:'upsert',sheet:'categories',row:rawCat(b)});ls.set('sns_store_cache',null);renderChrome()}catch(e){toast('خطأ')}}
 function renderCList(){const M={category:'منتجات مصنفة',bestsellers:'الأكثر مبيعاً (تلقائي)',bundles:'الباقات (تلقائي)',oils:'الزيوت (تلقائي)',all:'كل المنتجات'};$('clist').innerHTML=cats.map((c,i)=>`<div class="pitem ${c.visible?'':'off'}"><img src="${c.image||''}" alt=""><div><div class="n">${esc(c.name)} <small style="color:var(--muted)">${esc(c.name_en||'')}</small></div><div class="m">${M[c.mode]||c.mode} · ${countCat(c)} منتج</div></div><div class="acts"><button onclick="moveCat('${c.id}',-1)" ${i===0?'disabled':''}>▲</button><button onclick="moveCat('${c.id}',1)" ${i===cats.length-1?'disabled':''}>▼</button><button onclick="editCat('${c.id}')">تعديل</button><button onclick="cQuick('${c.id}')">${c.visible?'إخفاء':'إظهار'}</button><button style="color:#b42318" onclick="delCat('${c.id}')">حذف</button></div></div>`).join('')}
+
 /* texts */
 function renderTexts(){$('txList').innerHTML=Object.keys(DTX).map(k=>`<div class="txrow"><div class="k">${k}</div><input data-k="${k}_ar" value="${esc(TX[k+'_ar']||'')}" placeholder="${esc(DTX[k][0])}"><input data-k="${k}_en" dir="ltr" value="${esc(TX[k+'_en']||'')}" placeholder="${esc(DTX[k][1])}"></div>`).join('')}
 async function saveTexts(){const data={};[...$('txList').querySelectorAll('input')].forEach(i=>{data['tx_'+i.dataset.k]=i.value.trim()});$('txStatus').textContent='…';try{await own({action:'settings',data});Object.entries(data).forEach(([k,v])=>{S[k]=v;TX[k.slice(3)]=v});ls.set('sns_store_cache',null);$('txStatus').textContent='';toast('تم حفظ النصوص')}catch(e){$('txStatus').textContent='خطأ: '+e.message}}
+
 /* site */
 const SITE_IDS={sBrand:'site_brand',sTag:'site_tag',sEyebrow:'site_eyebrow',sEyebrowEn:'site_eyebrow_en',sHeroSub:'site_hero_sub',sHeroSubEn:'site_hero_sub_en',sTrust:'site_trust',sTrustEn:'site_trust_en',sAbout:'site_about',sAboutEn:'site_about_en',sLayer:'site_layer',sLayerEn:'site_layer_en',sAnn:'site_ann',sAnnEn:'site_ann_en',sAnnOn:'site_ann_on',sAnnLink:'site_ann_link',sUrl:'site_url',sWa:'site_wa',sPhone:'site_phone',sEmail:'site_email',sIg:'site_ig',sTk:'site_tk',sFb:'site_fb',sCur:'site_cur',sCurEn:'site_cur_en',sLang:'site_lang',sFit:'site_fit',sHeroName:'site_hero_name',sP:'site_p',sA:'site_a',sBg:'site_bg',sFont:'site_font',sShip:'site_ship',sFreeShip:'site_free_ship',sEta:'site_eta',sEtaEn:'site_eta_en',sPromoOn:'site_promo_on',sPromoCode:'site_promo_code',sPromoType:'site_promo_type',sPromoVal:'site_promo_val',sPromoEnd:'site_promo_end'};
 let newLogo='',newHero='',newAbout='';
@@ -1125,7 +1156,12 @@ async function saveSite(){const st=[$('sStatus'),$('sStatus2')];st.forEach(x=>x.
 if(!$('sizeRows').children.length)resetProductForm();
 
 /* ============ INIT ============ */
-if(!API_URL||API_URL.includes('PASTE_YOUR')){$('app').innerHTML=`<div class="setup"><h2 style="font-size:26px;margin-bottom:8px">خطوة أخيرة قبل ما المتجر يشتغل</h2><p>افتحي <code>index.html</code> ← ✏ ← في السطر الذي يحتوي <code>API_URL</code> استبدلي <code>PASTE_YOUR_WEB_APP_URL_HERE</code> برابط الـ Web App بتاعك ← Commit.</p></div>`}else{renderChrome();load()}
+if(!API_URL||API_URL.includes('PASTE_YOUR')){
+  $('app').innerHTML=`<div class="setup"><h2 style="font-size:26px;margin-bottom:8px">خطوة أخيرة قبل ما المتجر يشتغل</h2><p>افتحي <code>index.html</code> ← ✏ ← في السطر الذي يحتوي <code>API_URL</code> استبدلي <code>PASTE_YOUR_WEB_APP_URL_HERE</code> برابط الـ Web App بتاعك ← Commit.</p></div>`;
+} else {
+  renderChrome();
+  load();
+}
 </script>
 </body>
 </html>
