@@ -38,14 +38,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 .num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;font-family:var(--sans)}
-.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,40px);box-sizing:border-box;width:100%;min-width:0}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px;padding:0 clamp(16px,4vw,40px);box-sizing:border-box;width:100%;min-width:0}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 ::selection{background:var(--champ);color:var(--navy)}
 .grain::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.035;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .eyebrow{font-family:var(--sans);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--a);font-weight:500}
 [dir=rtl] .eyebrow{letter-spacing:.12em;font-size:12px}
 .hair{width:44px;height:1px;background:var(--champ);margin:14px auto}
-.sec{padding:clamp(48px,7vw,88px) 0;position:relative}
+.sec{padding:48px 0;padding:clamp(48px,7vw,88px) 0;position:relative}
 .sec-h{text-align:center;max-width:640px;margin:0 auto clamp(26px,4vw,44px)}
 .sec-h h2{font-size:clamp(30px,4vw,44px)}
 .sec-h p{color:var(--muted);margin-top:10px;font-weight:300}
@@ -159,7 +159,7 @@ header.scrolled .hbar{padding:10px 0}
 
 /* ============ HERO ============ */
 .hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--cream),var(--bg))}
-.hero .grid{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(28px,5vw,70px);padding:clamp(40px,6vw,84px) 0}
+.hero .grid{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:28px;gap:clamp(28px,5vw,70px);padding:40px 0;padding:clamp(40px,6vw,84px) 0}
 .hero .txt{position:relative;z-index:1}
 .hero .logo{width:76px;height:76px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px var(--champ),0 0 0 8px rgba(216,195,154,.18);margin-bottom:26px;background:#fff}
 .hero h1{font-size:clamp(46px,7vw,92px);line-height:.98;letter-spacing:.04em}
@@ -169,6 +169,7 @@ header.scrolled .hbar{padding:10px 0}
 .hero .sig{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(16px,2vw,22px);letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:var(--a);margin-top:10px}
 .hero .sub{margin:22px 0 30px;max-width:460px;color:var(--muted);font-size:16px;font-weight:300;line-height:1.85}
 .hero .cta{display:flex;gap:10px;flex-wrap:wrap}
+@supports not (gap:1px){.hero .cta>*{margin:0 5px 10px 0}}
 .hero .vis{position:relative;aspect-ratio:4/5;max-height:600px}
 .hero .vis .frame{position:absolute;inset:0;border-radius:2px;overflow:hidden;background:linear-gradient(160deg,var(--beige),var(--cream));box-shadow:var(--sh2)}
 .hero .vis .frame img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
@@ -572,6 +573,7 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
   .fbot{flex-direction:column;align-items:center;text-align:center;gap:8px}
   .contact{grid-template-columns:1fr}
   .hero .cta{flex-direction:column;gap:8px;width:100%}
+  @supports not (gap:1px){.hero .cta>*{margin:0 0 8px}}
   .hero .cta .btn{width:100%;justify-content:center;padding:13px 16px;font-size:13px}
   .hero .vis{max-height:280px}
   .hero h1.sig-h{font-size:clamp(18px,5.5vw,32px)}
@@ -1126,3 +1128,4 @@ if(!API_URL||API_URL.includes('PASTE_YOUR')){$('app').innerHTML=`<div class="set
 </script>
 </body>
 </html>
+
