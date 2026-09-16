@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
 <script>
 /* ======================================================================
-   ضع هنا رابط الـ Web App بتاع Apps Script (نفس الرابط اللي في لوحة الحسابات)
+   رابط الـ Web App
    ====================================================================== */
 const API_URL = 'https://script.google.com/macros/s/AKfycbwlxRSYVcTH1hbiSS-D5ZYjUvkoPepBzQBRS7ZM45SfDNPEwL8EouDaEZR-Re58IDfG5g/exec';
 </script>
@@ -174,10 +174,7 @@ header.scrolled .hbar{padding-top:10px;padding-bottom:10px}
 @supports not (gap:1px){.hero .cta>*{margin:0 5px 10px 0}}
 .hero .vis{position:relative;aspect-ratio:4/5;max-height:600px}
 .hero .vis .frame{position:absolute;inset:0;border-radius:2px;overflow:hidden;background:linear-gradient(160deg,var(--beige),var(--cream));box-shadow:var(--sh2)}
-.hero .vis .frame img{width:100%;height:100%;object-fit:contain;transition:transform 1.2s var(--ease)}
-.hero .vis:hover .frame img{transform:scale(1.03)}
-.hero .vis::before{content:"";position:absolute;inset:14px -14px -14px 14px;border:1px solid var(--champ);border-radius:2px;pointer-events:none}
-[dir=rtl] .hero .vis::before{inset:14px 14px -14px -14px}
+.hero .vis .frame img{width:100%;height:100%;object-fit:contain;transition:opacity .3s ease}
 .hero .vis .cap{position:absolute;bottom:18px;inset-inline-start:18px;background:rgba(253,251,247,.92);padding:10px 16px;border-radius:3px;box-shadow:var(--sh);font-size:12px;letter-spacing:.1em}
 .hero .vis .cap b{display:block;font-family:var(--serif);font-size:18px;letter-spacing:0;color:var(--p)}
 [dir=rtl] .hero .vis .cap b{font-family:var(--serif-ar)}
@@ -191,7 +188,7 @@ header.scrolled .hbar{padding-top:10px;padding-bottom:10px}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:clamp(16px,2.5vw,32px) clamp(14px,2vw,26px)}
 .pc{display:flex;flex-direction:column;position:relative}
 .pc .ph{position:relative;aspect-ratio:4/5;background:linear-gradient(160deg,var(--beige) 0%,var(--cream) 100%);overflow:hidden;border-radius:3px;cursor:pointer}
-.pc .ph img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease),opacity .4s}
+.pc .ph img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease,opacity .3s ease}
 .pc .ph img.alt{position:absolute;inset:0;opacity:0}
 .pc:hover .ph img.main{transform:scale(1.04)}
 .pc:hover .ph img.alt{opacity:1}
@@ -221,7 +218,7 @@ body.fit-contain .pc .ph img{object-fit:contain;padding:12px}
 .catc{position:relative;border-radius:3px;overflow:hidden;background:var(--cream);color:var(--p);display:flex;flex-direction:column;border:1px solid var(--line);transition:transform .25s var(--ease),box-shadow .25s}
 .catc:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
 .catc .catc-img{aspect-ratio:1;overflow:hidden;background:linear-gradient(160deg,var(--beige),var(--cream));position:relative;flex-shrink:0}
-.catc .catc-img img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
+.catc .catc-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
 .catc:hover .catc-img img{transform:scale(1.04)}
 .catc .catc-body{padding:14px 16px 16px;border-top:1px solid var(--line)}
 .catc h3{font-size:20px;font-weight:500}
@@ -310,7 +307,7 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 .pp .notes div{display:grid;grid-template-columns:90px 1fr;gap:12px;font-size:14px}
 .pp .notes span{font-family:var(--sans);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--a);padding-top:4px}
 [dir=rtl] .pp .notes span{letter-spacing:0;font-size:12px;font-family:var(--sans-ar)}
-.pp .tagsrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+.pp .tagsrow{display:flex;gap:8px;flex-wrap:wrap;margin-10px 0 0}
 
 .sizes{display:grid;gap:8px;margin:18px 0}
 .size{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:var(--r);padding:13px 16px;cursor:pointer;background:var(--cream);transition:all .2s}
@@ -851,18 +848,29 @@ function applyImages(im){
   imgMap=im.products||{};
   heroImg=im.hero||'';
   aboutImg=im.about_img||'';
-  products.forEach(p=>{const a=imgMap[p.id]||[];p.images=a;p.image=a[0]||''});
-  const r=location.hash.replace(/^#\/?/,'').split('/')[0];
-  if(!['checkout','thanks','track'].includes(r)) route();
-  renderCart();
+  products.forEach(p=>{
+    const a=imgMap[p.id]||[];
+    p.images=a;
+    p.image=a[0]||'';
+  });
+  
+  // تحديث فوري للصور في الصفحة الحالية دون إعادة تحميل كاملة
+  document.querySelectorAll('.pc').forEach(el => {
+    const id = el.dataset.id;
+    const p = products.find(x => x.id === id);
+    if(p && p.image) {
+      const img = el.querySelector('.ph img.main');
+      if(img && !img.src) img.src = p.image;
+    }
+  });
+
+  const heroEl = document.querySelector('.hero .vis .frame img');
+  if(heroEl && heroImg && heroEl.src !== heroImg) {
+    heroEl.src = heroImg;
+  }
 }
 
-async function loadImages(ver){
-  const c = await idb.get('images');
-  if(c) {
-    applyImages(c);
-    if(c.img_ver === ver && ver !== '') return;
-  }
+async function loadImagesDirect(){
   try{
     const im = await api({action:'images'});
     await idb.set('images', im);
@@ -873,7 +881,11 @@ async function loadImages(ver){
 function applyData(d){
   if(!d) return;
   products=(d.products||[]).map(normProduct).sort((a,b)=>a.order-b.order);
-  products.forEach(p=>{const a=imgMap[p.id]||[];p.images=a;p.image=a[0]||''});
+  products.forEach(p=>{
+    const a=imgMap[p.id]||[];
+    p.images=a;
+    p.image=a[0]||'';
+  });
   const rc=(d.categories||[]).map(c=>({...c,visible:String(c.visible)!=='0',order:n(c.order)}));
   catsFromSheet=rc.length>0;
   cats=(rc.length?rc:DEF_CATS.map(c=>({...c}))).sort((a,b)=>a.order-b.order);
@@ -888,30 +900,32 @@ function applyData(d){
 }
 
 async function load(){
+  // 1. عرض الكاش فوراً في أجزاء من الثانية
   const c = ls.get('sns_store_cache', null);
   const cachedImgs = await idb.get('images');
   
   if (cachedImgs) {
-    applyImages(cachedImgs);
+    imgMap = cachedImgs.products || {};
+    heroImg = cachedImgs.hero || '';
+    aboutImg = cachedImgs.about_img || '';
   }
 
   if (c) {
     applyData(c);
-    loadImages(String(c.img_ver || ''));
   } else {
     cats = DEF_CATS.map(cat => ({...cat}));
     renderChrome();
     route();
   }
 
-  try {
-    const d = await api({action:'public'});
-    ls.set('sns_store_cache', d);
-    applyData(d);
-    if (!c || String(c.img_ver || '') !== String(d.img_ver || '')) {
-      loadImages(String(d.img_ver || ''));
-    }
-  } catch(e) {}
+  // 2. تشغيل استدعاء البيانات والصور بالتوازي في نفس اللحظة
+  Promise.all([
+    api({action:'public'}).then(d => {
+      ls.set('sns_store_cache', d);
+      applyData(d);
+    }),
+    loadImagesDirect()
+  ]).catch(e => console.warn('Background sync:', e));
 }
 
 /* ============ PRICING ============ */
@@ -963,7 +977,7 @@ function card(p){
   const mf=minFinal(p),mo=minOrig(p),w=wish.includes(p.id);
   const badges=[];if(!p.available)badges.push(`<span class="badge out">${tx('out_of_stock')}</span>`);else{if(p.best)badges.push(`<span class="badge gold">${tx('bestseller')}</span>`);if(p.disc)badges.push(`<span class="badge sale">−${p.disc}%</span>`);if(p.badge)badges.push(`<span class="badge">${esc(p.badge)}</span>`)}
   return `<article class="pc" data-id="${p.id}">
-    <div class="ph" onclick="location.hash='#/p/${p.id}'">${p.image?`<img class="main" src="${p.image}" alt="${esc(pf(p,'name'))}" loading="lazy" decoding="async">${p.images[1]?`<img class="alt" src="${p.images[1]}" alt="" loading="lazy" decoding="async">`:''}`:`<div class="mono">${esc(S.site_brand.slice(0,3))}</div>`}
+    <div class="ph" onclick="location.hash='#/p/${p.id}'">${p.image?`<img class="main" src="${p.image}" alt="${esc(pf(p,'name'))}" loading="lazy">${p.images[1]?`<img class="alt" src="${p.images[1]}" alt="" loading="lazy">`:''}`:`<div class="mono">${esc(S.site_brand.slice(0,3))}</div>`}
       <div class="tags">${badges.join('')}</div>
       <button class="wish ${w?'on':''}" onclick="event.stopPropagation();toggleWish('${p.id}')" aria-label="wishlist">${SVG.heart}</button>
       <div class="qv" onclick="event.stopPropagation();openQV('${p.id}')">${tx('quick_view')}</div></div>
@@ -998,7 +1012,7 @@ function viewHome(){
       <p class="sub">${esc(sf('site_hero_sub'))}</p>
       <div class="cta"><a class="btn btn-p" href="#/c/${esc((vc[0]||{}).id||'all')}">${tx('hero_cta')}</a>${wa()?`<a class="btn btn-g" href="https://wa.me/${wa()}" target="_blank" rel="noopener">${tx('hero_cta2')}</a>`:''}</div>
       ${trust.length?`<div class="trust">${trust.map(t=>`<div>${esc(t)}</div>`).join('')}</div>`:''}</div>
-    <div class="vis"><div class="frame">${hp?`<img src="${hp}" alt="" fetchpriority="high" decoding="sync">`:`<div class="ph">${esc(S.site_brand.slice(0,3))}</div>`}</div>${!heroImg&&hpP?`<a class="cap" href="#/p/${hpP.id}"><span class="eyebrow">${tx('featured')}</span><b>${esc(pf(hpP,'name'))}</b></a>`:''}</div>
+    <div class="vis"><div class="frame">${hp?`<img src="${hp}" alt="" fetchpriority="high">`:`<div class="ph">${esc(S.site_brand.slice(0,3))}</div>`}</div>${!heroImg&&hpP?`<a class="cap" href="#/p/${hpP.id}"><span class="eyebrow">${tx('featured')}</span><b>${esc(pf(hpP,'name'))}</b></a>`:''}</div>
   </div></section>
   ${feat.length?`<section class="sec"><div class="wrap"><div class="sec-h"><div class="eyebrow">${esc(S.site_brand)}</div><h2>${tx('featured')}</h2><div class="hair"></div><p>${tx('featured_sub')}</p></div>${grid(feat)}</div></section>`:''}
   ${vc.length?`<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><h2>${tx('cats_title')}</h2><div class="hair"></div><p>${tx('cats_sub')}</p></div><div class="cats">${vc.map(c=>{const im=c.image||(catProducts(c).find(p=>p.image)||{}).image;return `<a class="catc" href="#/c/${esc(c.id)}"><div class="catc-img">${im?`<img src="${im}" alt="" loading="lazy">`:''}</div><div class="catc-body"><h3>${esc(catName(c))}</h3><small>${countCat(c)} ${tx('results')}</small></div></a>`}).join('')}</div></div></section>`:''}
@@ -1104,7 +1118,7 @@ async function submitOrder(){const v=id=>($(id).value||'').trim();const T=totals
   try{const d=await api({action:'order',order:o});ls.set('sns_customer',{first:o.first,last:o.last,phone:o.phone,phone2:o.phone2,email:o.email,gov:o.gov,city:o.city,address:o.address});ls.set('sns_last_order',{id:d.id,phone:o.phone,email:o.email,total:d.total,names:T.L.map(c=>`${pf(c,'name')} ${c.label} ×${c.qty}`)});cart=[];ls.set('sns_cart',cart);renderCart();location.hash='#/thanks/'+d.id}
   catch(e){$('coStatus').textContent=tx('err_generic');$('coSend').disabled=false;$('coSend').textContent=tx('confirm')}}
 function viewThanks(id){const lo=ls.get('sns_last_order',{});const msg=`${tx('track_no')} ${id}\n${(lo.names||[]).join('\n')}\n${tx('total')}: ${fmt(lo.total)} ${cur()}`;
-  return `<div class="wrap"><div class="track" style="text-align:center;padding:50px 0"><div class="eyebrow">${esc(S.site_brand)}</div><h1 style="font-size:44px;margin-10px 0">${tx('ok_title')}</h1><div class="hair"></div><p class="hint">${tx('ok_sub')}</p><div style="font-family:var(--sans);font-size:28px;letter-spacing:.1em;color:var(--p);margin:6px 0 16px">${esc(id)}</div><p style="color:var(--muted);max-width:460px;margin:0 auto">${tx('ok_msg')}</p>${lo.email?`<p style="color:var(--muted);font-size:13px;margin-top:8px">${tx('ok_email')} <span dir="ltr">${esc(lo.email)}</span></p>`:''}
+  return `<div class="wrap"><div class="track" style="text-align:center;padding:50px 0"><div class="eyebrow">${esc(S.site_brand)}</div><h1 style="font-size:44px;margin:10px 0">${tx('ok_title')}</h1><div class="hair"></div><p class="hint">${tx('ok_sub')}</p><div style="font-family:var(--sans);font-size:28px;letter-spacing:.1em;color:var(--p);margin:6px 0 16px">${esc(id)}</div><p style="color:var(--muted);max-width:460px;margin:0 auto">${tx('ok_msg')}</p>${lo.email?`<p style="color:var(--muted);font-size:13px;margin-top:8px">${tx('ok_email')} <span dir="ltr">${esc(lo.email)}</span></p>`:''}
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px"><a class="btn btn-p" href="#/track/${esc(id)}">${tx('ok_track')}</a>${wa()?`<a class="btn btn-g" href="https://wa.me/${wa()}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${tx('ok_wa')}</a>`:''}</div></div></div>`}
 
 /* ---- ORDER TRACKING ---- */
@@ -1131,7 +1145,6 @@ document.querySelectorAll('.atabs button').forEach(b=>b.onclick=()=>{document.qu
 function openAdmin(){renderPList();renderCList();fillProductSelects();fillSite();renderTexts();$('adminM').classList.add('on');document.body.style.overflow='hidden'}
 function closeAdmin(){$('adminM').classList.remove('on');document.body.style.overflow='';renderChrome();route()}
 
-/* تصغير وضغط الصور الذكي لتقليل الحجم إلى 50-80KB */
 function shrink(file,max,q){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};im.src=r.result};r.readAsDataURL(file)})}
 const rawProduct=p=>({id:p.id,name:p.name,name_en:p.name_en||'',kind:p.kind,category:p.category,badge:p.badge||'',available:p.available?'1':'0',best:p.best?'1':'0',feat:p.feat?'1':'0',disc:p.disc||0,desc:p.desc||'',desc_en:p.desc_en||'',top:p.top||'',mid:p.mid||'',base:p.base||'',sizes:JSON.stringify(p.sizes),tags:p.tags.join(','),pairs:p.pairs.join(','),bundle_items:p.bundle_items.join(','),order:p.order,created:p.created});
 
@@ -1146,7 +1159,7 @@ function resetProductForm(){editP=null;pImgs=[];pImgsChanged=false;renderPImgs()
 function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;resetProductForm();editP=id;fillProductSelects();$('pKind').value=p.kind;$('pKind').onchange();$('pCat').value=p.category;$('pName').value=p.name;$('pNameEn').value=p.name_en||'';$('pDesc').value=p.desc||'';$('pDescEn').value=p.desc_en||'';$('pTop').value=p.top||'';$('pMid').value=p.mid||'';$('pBase').value=p.base||'';$('pBadge').value=p.badge||'';$('pBest').value=p.best?'1':'0';$('pFeat').value=p.feat?'1':'0';$('pAvail').value=p.available?'1':'0';$('pDisc').value=p.disc;
   [...$('pTags').querySelectorAll('input')].forEach(i=>i.checked=p.tags.includes(i.value));[...$('pPairs').querySelectorAll('input')].forEach(i=>i.checked=p.pairs.includes(i.value));[...$('pBundleItems').querySelectorAll('input')].forEach(i=>i.checked=p.bundle_items.includes(i.value));
   $('sizeRows').innerHTML='';p.sizes.forEach(s=>addSizeRow(s.ml,s.price));pImgs=[...p.images];renderPImgs();$('pfTitle').textContent='تعديل: '+p.name;$('adminM').querySelector('.abox').scrollTo({top:0,behavior:'smooth'})}
-$('pImgFile').onchange=async e=>{for(const f of [...e.target.files]){if(pImgs.length>=6){toast('الحد الأقصى 6 صور');break}pImgs.push(await shrink(f,600,.65));pImgsChanged=true}renderPImgs();e.target.value=''};
+$('pImgFile').onchange=async e=>{for(const f of [...e.target.files]){if(pImgs.length>=6){toast('الحد الأقصى 6 صور');break}pImgs.push(await shrink(f,500,.6));pImgsChanged=true}renderPImgs();e.target.value=''};
 const checked=id=>[...$(id).querySelectorAll('input:checked')].map(i=>i.value);
 async function saveProduct(){const name=$('pName').value.trim();if(!name){toast('اكتبي الاسم');return}const sizes=readSizes();if(!sizes.length){toast('أضيفي سعر واحد على الأقل');return}const old=products.find(x=>x.id===editP);
   const p=normProduct({id:editP||uid(),name,name_en:$('pNameEn').value.trim(),kind:$('pKind').value,category:$('pCat').value,badge:$('pBadge').value,available:$('pAvail').value,best:$('pBest').value,feat:$('pFeat').value,disc:$('pDisc').value,desc:$('pDesc').value.trim(),desc_en:$('pDescEn').value.trim(),top:$('pTop').value.trim(),mid:$('pMid').value.trim(),base:$('pBase').value.trim(),sizes:JSON.stringify(sizes),tags:checked('pTags').join(','),pairs:checked('pPairs').join(','),bundle_items:checked('pBundleItems').join(','),order:old?old.order:(products.length?Math.max(...products.map(x=>x.order))+1:1),created:old?old.created:Date.now(),images:pImgs});
@@ -1161,7 +1174,7 @@ function renderPList(){$('pCount').textContent=products.length;$('plist').innerH
 let editC=null,cImg='';
 function resetCatForm(){editC=null;cImg='';['cName','cNameEn','cDesc','cDescEn'].forEach(i=>$(i).value='');$('cMode').value='category';$('cVis').value='1';$('cImgPrev').hidden=true;$('cfTitle').textContent='إضافة فئة';$('cStatus').textContent=''}
 function editCat(id){const c=catById(id);if(!c)return;resetCatForm();editC=id;$('cName').value=c.name;$('cNameEn').value=c.name_en||'';$('cDesc').value=c.desc||'';$('cDescEn').value=c.desc_en||'';$('cMode').value=c.mode||'category';$('cVis').value=c.visible?'1':'0';cImg=c.image||'';if(cImg){$('cImgPrev').src=cImg;$('cImgPrev').hidden=false}$('cfTitle').textContent='تعديل: '+c.name}
-$('cImgFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;cImg=await shrink(f,500,.65);$('cImgPrev').src=cImg;$('cImgPrev').hidden=false;e.target.value=''};
+$('cImgFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;cImg=await shrink(f,400,.6);$('cImgPrev').src=cImg;$('cImgPrev').hidden=false;e.target.value=''};
 const rawCat=c=>({id:c.id,name:c.name,name_en:c.name_en||'',desc:c.desc||'',desc_en:c.desc_en||'',mode:c.mode,visible:c.visible?'1':'0',order:c.order,image:c.image||''});
 async function seedCats(){if(catsFromSheet)return;for(const d of cats)await own({action:'upsert',sheet:'categories',row:rawCat(d)});catsFromSheet=true}
 async function saveCat(){const name=$('cName').value.trim();if(!name){toast('اكتبي الاسم');return}const old=catById(editC);const slug=old?old.id:(($('cNameEn').value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''))||uid());
@@ -1182,9 +1195,9 @@ let newLogo='',newHero='',newAbout='';
 function fillSite(){Object.entries(SITE_IDS).forEach(([id,k])=>{if($(id))$(id).value=S[k]??''});$('sLogoPrev').src=logo||'';if(heroImg){$('sHeroPrev').src=heroImg;$('sHeroPrev').hidden=false}if(aboutImg){$('sAboutPrev').src=aboutImg;$('sAboutPrev').hidden=false}newLogo=newHero=newAbout=''}
 Object.entries(SITE_IDS).forEach(([id,k])=>{if($(id))$(id).addEventListener('input',()=>{S[k]=$(id).value;applyTheme()})});
 function resetTheme(){['site_p','site_a','site_bg','site_font'].forEach(k=>S[k]=DEF[k]);fillSite();applyTheme()}
-$('sLogoFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;newLogo=await shrink(f,250,.7);logo=newLogo;$('sLogoPrev').src=newLogo;e.target.value=''};
-$('sHeroFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;newHero=await shrink(f,800,.7);heroImg=newHero;$('sHeroPrev').src=newHero;$('sHeroPrev').hidden=false;e.target.value=''};
-$('sAboutFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;newAbout=await shrink(f,700,.7);aboutImg=newAbout;$('sAboutPrev').src=newAbout;$('sAboutPrev').hidden=false;e.target.value=''};
+$('sLogoFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;newLogo=await shrink(f,200,.6);logo=newLogo;$('sLogoPrev').src=newLogo;e.target.value=''};
+$('sHeroFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;newHero=await shrink(f,600,.6);heroImg=newHero;$('sHeroPrev').src=newHero;$('sHeroPrev').hidden=false;e.target.value=''};
+$('sAboutFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;newAbout=await shrink(f,500,.6);aboutImg=newAbout;$('sAboutPrev').src=newAbout;$('sAboutPrev').hidden=false;e.target.value=''};
 async function saveSite(){const st=[$('sStatus'),$('sStatus2')];st.forEach(x=>x.textContent='جاري الحفظ…');try{const data={};Object.values(SITE_IDS).forEach(k=>data[k]=S[k]??'');await own({action:'settings',data});if(newLogo)await own({action:'logo',data:newLogo});if(newHero)await own({action:'image',key:'hero',data:newHero});if(newAbout)await own({action:'image',key:'about_img',data:newAbout});if(newHero||newAbout)await idb.set('images',{products:imgMap,hero:heroImg,about_img:aboutImg,img_ver:'local'});newLogo=newHero=newAbout='';ls.set('sns_store_cache',null);st.forEach(x=>x.textContent='');toast('تم الحفظ')}catch(e){st.forEach(x=>x.textContent='خطأ: '+e.message)}}
 if(!$('sizeRows').children.length)resetProductForm();
 
