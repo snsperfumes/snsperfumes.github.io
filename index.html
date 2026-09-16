@@ -547,6 +547,21 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
   .mbox{border-radius:6px}
   .modal{padding:8px}
   .setup{margin:30px 14px;padding:20px}
+  /* iOS auto-zooms any input under 16px on focus — keep all form fields at 16px on phones */
+  .field input,.field select,.field textarea,.toolbar select,.toolbar input,.promo input,.track .f input{font-size:16px}
+}
+
+@media(max-width:380px){
+  .hbar{gap:2px}
+  .hl,.hr{gap:2px}
+  .ib{width:34px;height:34px}
+  .ib svg{width:17px;height:17px}
+  .hlogo{gap:6px}
+  .hlogo img{width:26px;height:26px}
+  .hlogo b{font-size:15px;letter-spacing:.06em}
+  .hlogo small{display:none}
+  .lang{padding:5px 8px;font-size:9.5px;letter-spacing:.08em}
+  .wrap{padding:0 12px}
 }
 
 @media(max-width:520px){
