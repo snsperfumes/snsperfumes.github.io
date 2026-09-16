@@ -172,7 +172,7 @@ header.scrolled .hbar{padding-top:10px;padding-bottom:10px}
 @supports not (gap:1px){.hero .cta>*{margin:0 5px 10px 0}}
 .hero .vis{position:relative;aspect-ratio:4/5;max-height:600px}
 .hero .vis .frame{position:absolute;inset:0;border-radius:2px;overflow:hidden;background:linear-gradient(160deg,var(--beige),var(--cream));box-shadow:var(--sh2)}
-.hero .vis .frame img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.hero .vis .frame img{width:100%;height:100%;object-fit:contain;transition:transform 1.2s var(--ease)}
 .hero .vis:hover .frame img{transform:scale(1.03)}
 .hero .vis::before{content:"";position:absolute;inset:14px -14px -14px 14px;border:1px solid var(--champ);border-radius:2px;pointer-events:none}
 [dir=rtl] .hero .vis::before{inset:14px 14px -14px -14px}
