@@ -813,12 +813,13 @@ $('searchBtn').onclick=()=>toggleSearch(!$('searchBar').classList.contains('open
 $('searchIn').onkeydown=e=>{if(e.key==='Enter'){const q=$('searchIn').value.trim();if(q){location.hash='#/search/'+encodeURIComponent(q);toggleSearch(false)}}};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAll();closeQV();toggleSearch(false)}});
 
-let notifyProd = null;
-function openNotify(id) {
+let notifyProd = null, notifySize = null;
+function openNotify(id, sizeLbl) {
   const p = products.find(x => x.id === id);
   if(!p) return;
   notifyProd = p;
-  $('notifyProdName').textContent = pf(p, 'name');
+  notifySize = sizeLbl || null;
+  $('notifyProdName').textContent = pf(p, 'name') + (notifySize ? ' — ' + notifySize : '');
   $('notifyHint').textContent = tx('notify_hint');
   $('notifyLabel').textContent = tx('notify_label');
   $('notifyContact').placeholder = tx('notify_ph');
@@ -848,7 +849,7 @@ async function submitNotify() {
     await api({
       action: 'restock_subscribe',
       productId: notifyProd.id,
-      productName: notifyProd.name,
+      productName: notifyProd.name + (notifySize ? ' - ' + notifySize : ''),
       contact: contact
     });
     $('notifyStatus').textContent = tx('notify_ok');
@@ -966,15 +967,7 @@ function viewProduct(id){const p=products.find(x=>x.id===id);if(!p)return viewHo
     ${bitems.length?`<div class="bundle-box"><h4>${tx('bundle_inc')}</h4>${bitems.map(b=>`<div class="it"><a href="#/p/${b.id}">${esc(pf(b,'name'))}</a><span class="num">${fmt(minOrig(b))}</span></div>`).join('')}<div class="save"><span>${tx('bundle_orig')}: <s class="num">${fmt(bundleOrig(p))}</s></span><span>${tx('bundle_price')}: <span class="num">${fmt(minFinal(p))}</span></span></div>${bundleOrig(p)>minFinal(p)?`<div class="save"><span>${tx('bundle_save')}</span><b class="num">${fmt(bundleOrig(p)-minFinal(p))} ${esc(cur())}</b></div>`:''}</div>`:''}
     <div class="sizes" id="ppSizes"></div>
     <div class="stock-tag" id="ppStock" style="font-size:13px;margin:8px 0;display:none"></div>
-    <div class="buy">
-      ${p.available ? `
-        <div class="qty"><button onclick="curQty=Math.max(1,curQty-1);ppUpd()">−</button><span id="ppQty">1</span><button onclick="curQty=Math.min((cur_.sizes[curSize]&&cur_.sizes[curSize].stock)||99, curQty+1);ppUpd()">+</button></div>
-        <button class="btn btn-p" id="ppAdd" onclick="addToCart(cur_,curSize,curQty)"></button>
-      ` : `
-        <button class="btn btn-notify" style="flex:1" onclick="openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>
-      `}
-      <button class="wbtn ${wish.includes(p.id)?'on':''}" data-wish="${p.id}" onclick="toggleWish('${p.id}')" aria-label="wishlist">${SVG.heart}</button>
-    </div>
+    <div class="buy" id="ppBuy"></div>
     ${sf('site_eta')?`<p class="hint" style="margin-top:12px">${tx('track_eta')}: ${esc(sf('site_eta'))}</p>`:''}
   </div></div>
   ${recoPairs.length?`<div class="reco"><h2>${tx('pairs')}</h2>${grid(recoPairs)}</div>`:''}
@@ -983,11 +976,6 @@ function viewProduct(id){const p=products.find(x=>x.id===id);if(!p)return viewHo
   ${same.length?`<div class="reco"><h2>${tx('also_like')}</h2>${grid(same)}</div>`:''}</div>`}
 
 function initProduct(){if(!cur_||!$('ppMain'))return;ppGal();
-  if(cur_.available) {
-    $('stickyBuy').innerHTML=`<div style="flex:1"><div style="font-family:var(--serif);font-size:16px">${esc(pf(cur_,'name'))}</div><b class="num" id="stPrice"></b></div><button class="btn btn-p btn-sm" onclick="addToCart(cur_,curSize,curQty)">${tx('add_cart')}</button>`;
-  } else {
-    $('stickyBuy').innerHTML=`<div style="flex:1"><div style="font-family:var(--serif);font-size:16px">${esc(pf(cur_,'name'))}</div><b class="num">${tx('out_of_stock')}</b></div><button class="btn btn-notify btn-sm" onclick="openNotify('${cur_.id}')">🔔 ${tx('notify_me')}</button>`;
-  }
   $('stickyBuy').classList.add('show');document.body.classList.add('has-sticky');ppUpd()}
 
 function ppGal(){const p=cur_,im=p.images,many=im.length>1;$('ppMain').innerHTML=(im[curImg]?`<img src="${im[curImg]}" alt="${esc(pf(p,'name'))}">`:`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:80px;color:var(--champ)">${esc(S.site_brand.slice(0,3))}</div>`)+(many?`<button class="arr l" onclick="galTo(curImg-1)">‹</button><button class="arr r" onclick="galTo(curImg+1)">›</button>`:'');$('ppThumbs').innerHTML=many?im.map((x,i)=>`<img src="${x}" class="${i===curImg?'on':''}" onclick="galTo(${i})" alt="">`).join(''):'';
@@ -995,26 +983,42 @@ function ppGal(){const p=cur_,im=p.images,many=im.length>1;$('ppMain').innerHTML
 function galTo(i){const L=cur_.images.length;curImg=(i+L)%L;ppGal()}
 
 function ppUpd(){const p=cur_;if(!$('ppSizes'))return;
-  $('ppSizes').innerHTML=p.sizes.map((s,i)=>{const out=n(s.stock)<=0;return `<div class="size ${i===curSize?'on':''} ${out?'off':''}" onclick="${out?'':`curSize=${i};ppUpd()`}"><b>${sizeLabel(p,s)}${out?` — ${tx('out_of_stock')}`:''}</b><div class="pr">${p.disc?`<s class="num">${fmt(s.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,s))} ${esc(cur())}</b></div></div>`}).join('');
-  const s=p.sizes[curSize]||{};const sStock=n(s.stock);const sOut=sStock<=0;
+  $('ppSizes').innerHTML=p.sizes.map((s,i)=>{const out=n(s.stock)<=0;return `<div class="size ${i===curSize?'on':''} ${out?'off':''}" onclick="curSize=${i};ppUpd()"><b>${sizeLabel(p,s)}${out?` — ${tx('out_of_stock')}`:''}</b><div class="pr">${p.disc?`<s class="num">${fmt(s.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,s))} ${esc(cur())}</b></div></div>`}).join('');
+  const s=p.sizes[curSize]||{};const sStock=n(s.stock);const sOut=sStock<=0||!p.available;
   curQty=Math.max(1,Math.min(curQty,sOut?1:sStock));
   if($('ppStock')){
-    if(p.available && !sOut && sStock<=5){$('ppStock').style.display='';$('ppStock').textContent=tx('stock_left').replace('{n}',sStock);}
+    if(!sOut && sStock<=5){$('ppStock').style.display='';$('ppStock').textContent=tx('stock_left').replace('{n}',sStock);}
     else{$('ppStock').style.display='none';}
   }
-  const tot=sizeFinal(p,s)*curQty;if($('ppQty'))$('ppQty').textContent=curQty;
-  if($('ppAdd')){$('ppAdd').innerHTML=`${(p.available&&!sOut)?tx('add_cart'):tx('out_of_stock')} — <span class="num">${fmt(tot)} ${esc(cur())}</span>`;$('ppAdd').disabled=!p.available||!p.sizes.length||sOut;}
-  if($('stPrice'))$('stPrice').textContent=`${fmt(tot)} ${cur()}`}
+  const tot=sizeFinal(p,s)*curQty;
+  const wOn=wish.includes(p.id);
+  const wishBtn=`<button class="wbtn ${wOn?'on':''}" data-wish="${p.id}" onclick="toggleWish('${p.id}')" aria-label="wishlist">${SVG.heart}</button>`;
+  if($('ppBuy')){
+    if(!sOut && p.sizes.length){
+      $('ppBuy').innerHTML=`<div class="qty"><button onclick="curQty=Math.max(1,curQty-1);ppUpd()">−</button><span id="ppQty">${curQty}</span><button onclick="curQty=Math.min(${sStock||99}, curQty+1);ppUpd()">+</button></div><button class="btn btn-p" id="ppAdd" onclick="addToCart(cur_,curSize,curQty)">${tx('add_cart')} — <span class="num">${fmt(tot)} ${esc(cur())}</span></button>${wishBtn}`;
+    } else {
+      $('ppBuy').innerHTML=`<button class="btn btn-notify" style="flex:1" onclick="openNotifySize()">🔔 ${tx('notify_me')}</button>${wishBtn}`;
+    }
+  }
+  if($('stickyBuy')){
+    if(!sOut && p.sizes.length){
+      $('stickyBuy').innerHTML=`<div style="flex:1"><div style="font-family:var(--serif);font-size:16px">${esc(pf(p,'name'))}</div><b class="num">${fmt(tot)} ${esc(cur())}</b></div><button class="btn btn-p btn-sm" onclick="addToCart(cur_,curSize,curQty)">${tx('add_cart')}</button>`;
+    } else {
+      $('stickyBuy').innerHTML=`<div style="flex:1"><div style="font-family:var(--serif);font-size:16px">${esc(pf(p,'name'))}</div><b class="num">${tx('out_of_stock')}</b></div><button class="btn btn-notify btn-sm" onclick="openNotifySize()">🔔 ${tx('notify_me')}</button>`;
+    }
+  }
+}
+function openNotifySize(){if(!cur_)return;const s=cur_.sizes[curSize];openNotify(cur_.id,s?sizeLabel(cur_,s):null)}
 
 let qvP=null,qvS=0;
 function openQV(id){const p=products.find(x=>x.id===id);if(!p)return;qvP=p;qvS=0;qvRender();$('qv').classList.add('on');document.body.style.overflow='hidden'}
 function closeQV(){$('qv').classList.remove('on');document.body.style.overflow=''}
-function qvRender(){const p=qvP;const s=p.sizes[qvS]||{};const sOut=n(s.stock)<=0;const stockLine=(p.available&&!sOut&&n(s.stock)<=5)?`<div class="stock-tag" style="font-size:12px;margin:6px 0">${tx('stock_left').replace('{n}',n(s.stock))}</div>`:'';
+function qvRender(){const p=qvP;const s=p.sizes[qvS]||{};const sOut=n(s.stock)<=0||!p.available;const stockLine=(!sOut&&n(s.stock)<=5)?`<div class="stock-tag" style="font-size:12px;margin:6px 0">${tx('stock_left').replace('{n}',n(s.stock))}</div>`:'';
   $('qvBody').innerHTML=`<div class="qvg"><div class="im">${p.image?`<img src="${p.image}" alt="">`:''}</div><div class="bd"><div class="eyebrow">${esc(kindLabel(p))}</div><h2>${esc(pf(p,'name'))}</h2><p style="color:var(--muted);font-weight:300;margin-bottom:6px">${esc(pf(p,'desc'))}</p>
-  <div class="sizes">${p.sizes.map((x,i)=>{const out=n(x.stock)<=0;return `<div class="size ${i===qvS?'on':''} ${out?'off':''}" onclick="${out?'':`qvS=${i};qvRender()`}"><b>${sizeLabel(p,x)}${out?` — ${tx('out_of_stock')}`:''}</b><div class="pr">${p.disc?`<s class="num">${fmt(x.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,x))} ${esc(cur())}</b></div></div>`}).join('')}</div>
+  <div class="sizes">${p.sizes.map((x,i)=>{const out=n(x.stock)<=0;return `<div class="size ${i===qvS?'on':''} ${out?'off':''}" onclick="qvS=${i};qvRender()"><b>${sizeLabel(p,x)}${out?` — ${tx('out_of_stock')}`:''}</b><div class="pr">${p.disc?`<s class="num">${fmt(x.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,x))} ${esc(cur())}</b></div></div>`}).join('')}</div>
   ${stockLine}
   <div class="buy">
-    ${(p.available&&!sOut) ? `<button class="btn btn-p" onclick="addToCart(qvP,qvS,1);closeQV()" ${p.sizes.length?'':'disabled'}>${tx('add_cart')}</button>` : `<button class="btn btn-notify" onclick="closeQV();openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>`}
+    ${!sOut ? `<button class="btn btn-p" onclick="addToCart(qvP,qvS,1);closeQV()" ${p.sizes.length?'':'disabled'}>${tx('add_cart')}</button>` : `<button class="btn btn-notify" onclick="closeQV();openNotify('${p.id}',${p.sizes.length?`'${esc(sizeLabel(p,s)).replace(/'/g,"\\'")}'`:'null'})">🔔 ${tx('notify_me')}</button>`}
     <a class="btn-txt" href="#/p/${p.id}" onclick="closeQV()">${tx('view_all')} →</a>
   </div></div></div>`}
 $('qv').addEventListener('click',e=>{if(e.target===$('qv'))closeQV()});
