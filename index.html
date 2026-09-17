@@ -268,37 +268,6 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 @keyframes fade{from{opacity:0;transform:translateY(8px)}}
 @media(prefers-reduced-motion:reduce){.view,.drawer,.pc .ph img,.btn{animation:none!important;transition:none!important}}
 
-/* ===== MOBILE RESPONSIVE FIXES ===== */
-@media(max-width:860px){
-  .hero .grid{grid-template-columns:1fr;text-align:center;gap:28px}
-  .hero .txt{order:2}
-  .hero .vis{order:1;aspect-ratio:3/4;max-height:380px;max-width:420px;width:100%;margin:0 auto}
-  .hero .sub{margin-left:auto;margin-right:auto}
-  .hero .cta{justify-content:center}
-  .hero .logo{margin-left:auto;margin-right:auto}
-  .split{grid-template-columns:1fr;gap:28px}
-  .split .im{max-width:420px;width:100%;margin:0 auto}
-}
-@media(max-width:640px){
-  .cats{grid-template-columns:repeat(2,1fr);gap:10px}
-  .catc h3{font-size:15px}
-  .catc small{font-size:9px}
-  .catc .catc-body{padding:10px 12px 12px}
-  .pgrid{grid-template-columns:repeat(2,1fr);gap:16px 10px}
-  .pc h3{font-size:16px}
-  .pc .price b{font-size:13.5px}
-  .toolbar{align-items:stretch}
-  .toolbar .sp{display:none}
-  .toolbar .filters{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
-  .toolbar .filters select{width:100%;font-size:11px;padding:8px 4px}
-  .co{grid-template-columns:1fr;gap:20px}
-  .co .box.sum-box{position:static;top:auto}
-}
-@media(max-width:400px){
-  .cats{grid-template-columns:1fr 1fr;gap:8px}
-  .hero h1{font-size:clamp(34px,10vw,46px)}
-}
-
 .crumb{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:16px 0 22px;font-family:var(--sans)}
 [dir=rtl] .crumb{letter-spacing:.02em;font-size:12.5px;font-family:var(--sans-ar)}
 .crumb a:hover{color:var(--p)}
@@ -442,6 +411,37 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 .status.err{color:#b42318}
 .colorrow{display:flex;align-items:center;gap:10px}
 .colorrow input[type=color]{width:44px;height:34px;border:1px solid var(--line);border-radius:6px;padding:2px;background:#fff;cursor:pointer}
+
+/* ===== MOBILE RESPONSIVE FIXES (kept last so it always wins the cascade) ===== */
+@media(max-width:860px){
+  .hero .grid{grid-template-columns:1fr;text-align:center;gap:28px}
+  .hero .txt{order:2}
+  .hero .vis{order:1;aspect-ratio:3/4;max-height:380px;max-width:420px;width:100%;margin:0 auto}
+  .hero .sub{margin-left:auto;margin-right:auto}
+  .hero .cta{justify-content:center}
+  .hero .logo{margin-left:auto;margin-right:auto}
+  .split{grid-template-columns:1fr;gap:28px}
+  .split .im{max-width:420px;width:100%;margin:0 auto}
+}
+@media(max-width:640px){
+  .cats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .catc h3{font-size:15px}
+  .catc small{font-size:9px}
+  .catc .catc-body{padding:10px 12px 12px}
+  .pgrid{grid-template-columns:repeat(2,1fr);gap:16px 10px}
+  .pc h3{font-size:16px}
+  .pc .price b{font-size:13.5px}
+  .toolbar{align-items:stretch}
+  .toolbar .sp{display:none}
+  .toolbar .filters{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+  .toolbar .filters select{width:100%;font-size:11px;padding:8px 4px}
+  .co{grid-template-columns:1fr;gap:20px}
+  .co .box.sum-box{position:static;top:auto}
+}
+@media(max-width:400px){
+  .cats{grid-template-columns:1fr 1fr;gap:8px}
+  .hero h1{font-size:clamp(34px,10vw,46px)}
+}
 </style>
 </head>
 <body>
