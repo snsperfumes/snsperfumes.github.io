@@ -304,6 +304,7 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 .size{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:var(--r);padding:13px 16px;cursor:pointer;background:var(--cream);transition:all .2s}
 .size:hover{border-color:var(--champ)}
 .size.on{border-color:var(--p);box-shadow:inset 0 0 0 1px var(--p)}
+.size.off{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
 .size b{font-family:var(--sans);font-weight:500;font-size:15px}
 .size .pr{display:flex;gap:8px;align-items:baseline}
 .size .pr s{color:var(--muted);font-size:12px}
@@ -501,13 +502,12 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
         <div class="field"><label>شارة</label><select id="pBadge"><option value="">بدون</option><option>جديد</option><option>إصدار محدود</option><option>هدية مثالية</option><option>مجموعة مختارة</option></select></div>
         <div class="field"><label>الأكثر مبيعاً؟</label><select id="pBest"><option value="0">لا</option><option value="1">نعم</option></select></div>
         <div class="field"><label>مميز في الصفحة الرئيسية؟</label><select id="pFeat"><option value="0">لا</option><option value="1">نعم</option></select></div>
-        <div class="field"><label>كمية المخزون (Stock)</label><input id="pStock" type="number" min="0" value="10" placeholder="القطع المتوفرة"></div>
-        <div class="field"><label>متاح في المخزون؟</label><select id="pAvail"><option value="1">متاح (In Stock)</option><option value="0">نفد (Sold Out)</option></select></div>
+        <div class="field"><label>متاح للبيع؟ (مفتاح عام)</label><select id="pAvail"><option value="1">متاح (In Stock)</option><option value="0">نفد (Sold Out)</option></select></div>
         <div class="field"><label>خصم % (0 = بدون)</label><input id="pDisc" type="number" min="0" max="90" value="0"></div>
         <div class="field wide"><label>الطابع العطري (Tags)</label><div class="multi" id="pTags"></div></div>
         <div class="field wide"><label>يتناسب مع (Pairs well with)</label><div class="multi" id="pPairs"></div></div>
         <div class="field wide" id="pBundleWrap" hidden><label>منتجات الباقة</label><div class="multi" id="pBundleItems"></div></div>
-        <div class="field wide"><label id="pSizesLbl">الأحجام والأسعار</label><div id="sizeRows"></div><button class="btn btn-o btn-sm" onclick="addSizeRow()">＋ إضافة حجم</button></div>
+        <div class="field wide"><label id="pSizesLbl">الأحجام والأسعار والمخزون (لكل حجم مخزون مستقل)</label><div id="sizeRows"></div><button class="btn btn-o btn-sm" onclick="addSizeRow()">＋ إضافة حجم</button></div>
         <div class="field wide"><label>الصور (لغاية 6 — الأولى رئيسية)</label><div class="imgdrop" onclick="$('pImgFile').click()">اضغط لإضافة صور — بتتصغر تلقائياً</div><input type="file" id="pImgFile" accept="image/*" multiple hidden><div class="imgs-prev" id="pImgs"></div></div>
       </div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center"><button class="btn btn-p" onclick="saveProduct()">حفظ المنتج</button><button class="btn btn-o" onclick="resetProductForm()">مسح</button><span class="status" id="pStatus"></span></div>
@@ -622,7 +622,7 @@ const DTX={
   find_title:['اكتشفي عطرك','Find Your Scent'],find_sub:['اختاري الطابع الأقرب لك','Choose the character closest to you'],
   about_title:['من نحن','Our Story'],contact_title:['تواصل معنا','Contact Us'],contact_sub:['نسعد بمساعدتك في اختيار عطرك','We are happy to help you choose your fragrance'],
   view_all:['عرض الكل','View All'],quick_view:['نظرة سريعة','Quick View'],add_cart:['أضيفي للسلة','Add to Cart'],from:['يبدأ من','From'],out_of_stock:['نفد','Sold Out'],bestseller:['الأكثر مبيعاً','Bestseller'],
-  notify_me:['أعلمني عند التوفر','Notify Me'],notify_ok:['تم تسجيل طلبك! سنرسل لكِ فور توفره','Notification set! We will alert you.'],notify_err:['من فضلك أدخلي رقم الموبايل أو الإيميل','Please enter your phone or email'],
+  notify_me:['أعلمني عند التوفر','Notify Me'],notify_ok:['تم تسجيل طلبك! سنرسل لكِ فور توفره','Notification set! We will alert you.'],notify_err:['من فضلك أدخلي رقم الموبايل أو الإيميل','Please enter your phone or email'],notify_hint:['سجّلي إيميلك أو رقم موبايلك وهنبعتلك أول ما العطر يتوفر فوراً.','Enter your email or mobile number and we will notify you the moment it is back in stock.'],notify_label:['رقم الموبايل أو الإيميل','Mobile number or email'],notify_ph:['01xxxxxxxxx أو name@gmail.com','01xxxxxxxxx or name@gmail.com'],notify_confirm:['تأكيد الإشعار','Confirm Notification'],
   stock_left:['متبقي {n} قطع فقط في المخزون','Only {n} left in stock'],
   notes:['الهرم العطري','Fragrance Notes'],top:['الافتتاحية','Top'],heart:['القلب','Heart'],base:['القاعدة','Base'],
   pairs:['يتناسب مع','Pairs Well With'],also_like:['قد يعجبك أيضاً','You May Also Like'],layer_with:['أضيفي الطبقة مع','Layer It With'],complete:['أكملي مجموعتك','Complete Your Scent'],
@@ -663,10 +663,16 @@ const csv=v=>String(v||'').split(',').map(s=>s.trim()).filter(Boolean);
 
 function normProduct(p){
   let sizes=[];try{sizes=JSON.parse(p.sizes||'[]')}catch(e){}
+  const legacyStock=Number(p.stock);
+  const hasLegacyStock=!isNaN(legacyStock) && p.stock!=='' && p.stock!==undefined;
+  sizes=sizes.map(s=>{
+    const rawS=Number(s.stock);
+    const st=(!isNaN(rawS) && s.stock!=='' && s.stock!==undefined) ? rawS : (hasLegacyStock ? legacyStock : 999);
+    return {...s,stock:st};
+  });
   const images=Array.isArray(p.images)?p.images:(p.image?[p.image]:[]);
   const cat=LEGACY_CAT[p.category]||p.category||'';
-  const rawStock = Number(p.stock);
-  const stock = !isNaN(rawStock) && p.stock !== '' ? rawStock : 999;
+  const stock=sizes.reduce((a,s)=>a+Math.max(0,n(s.stock)),0);
   const isAvailable = String(p.available) !== '0' && stock > 0;
   return {...p,sizes,images,image:images[0]||'',category:cat,kind:p.kind||'perfume',stock,available:isAvailable,best:String(p.best)==='1',feat:String(p.feat)==='1',disc:Math.min(90,Math.max(0,n(p.disc))),tags:csv(p.tags),pairs:csv(p.pairs),bundle_items:csv(p.bundle_items),order:n(p.order),created:n(p.created)}
 }
@@ -813,6 +819,10 @@ function openNotify(id) {
   if(!p) return;
   notifyProd = p;
   $('notifyProdName').textContent = pf(p, 'name');
+  $('notifyHint').textContent = tx('notify_hint');
+  $('notifyLabel').textContent = tx('notify_label');
+  $('notifyContact').placeholder = tx('notify_ph');
+  $('notifySubmitBtn').textContent = tx('notify_confirm');
   $('notifyContact').value = '';
   $('notifyStatus').textContent = '';
   $('notifyM').classList.add('on');
@@ -946,20 +956,19 @@ function viewProduct(id){const p=products.find(x=>x.id===id);if(!p)return viewHo
   const perfumes=p.kind==='oil'?products.filter(x=>x.kind==='perfume'&&!recoPairs.includes(x)).slice(0,4):[];
   const same=products.filter(x=>x.id!==p.id&&x.kind===p.kind&&x.category===p.category&&!recoPairs.includes(x)).slice(0,4);
   const bitems=p.kind==='bundle'?p.bundle_items.map(i=>products.find(x=>x.id===i)).filter(Boolean):[];
-  const stockText = (p.available && p.stock <= 5) ? `<div class="stock-tag" style="font-size:13px;margin:8px 0">${tx('stock_left').replace('{n}', p.stock)}</div>` : '';
 
   return `<div class="wrap"><div class="crumb"><a href="#/">${esc(S.site_brand)}</a><span>/</span>${c?`<a href="#/c/${c.id}">${esc(catName(c))}</a><span>/</span>`:''}${esc(pf(p,'name'))}</div>
   <div class="pp"><div class="gal"><div class="main" id="ppMain"></div><div class="thumbs" id="ppThumbs"></div></div>
   <div><div class="eyebrow">${esc(kindLabel(p))}${p.best?` · ${tx('bestseller')}`:''}${p.badge?` · ${esc(p.badge)}`:''}</div>
     <h1>${esc(pf(p,'name'))}</h1><p class="desc">${esc(pf(p,'desc'))}</p>
-    ${stockText}
     ${p.tags.length?`<div class="tagsrow">${p.tags.map(t=>`<a class="badge" href="#/search/${t}">${esc(tagName(t))}</a>`).join('')}</div>`:''}
     ${(p.top||p.mid||p.base)?`<div class="notes">${p.top?`<div><span>${tx('top')}</span><div>${esc(pf(p,'top'))}</div></div>`:''}${p.mid?`<div><span>${tx('heart')}</span><div>${esc(pf(p,'mid'))}</div></div>`:''}${p.base?`<div><span>${tx('base')}</span><div>${esc(pf(p,'base'))}</div></div>`:''}</div>`:''}
     ${bitems.length?`<div class="bundle-box"><h4>${tx('bundle_inc')}</h4>${bitems.map(b=>`<div class="it"><a href="#/p/${b.id}">${esc(pf(b,'name'))}</a><span class="num">${fmt(minOrig(b))}</span></div>`).join('')}<div class="save"><span>${tx('bundle_orig')}: <s class="num">${fmt(bundleOrig(p))}</s></span><span>${tx('bundle_price')}: <span class="num">${fmt(minFinal(p))}</span></span></div>${bundleOrig(p)>minFinal(p)?`<div class="save"><span>${tx('bundle_save')}</span><b class="num">${fmt(bundleOrig(p)-minFinal(p))} ${esc(cur())}</b></div>`:''}</div>`:''}
     <div class="sizes" id="ppSizes"></div>
+    <div class="stock-tag" id="ppStock" style="font-size:13px;margin:8px 0;display:none"></div>
     <div class="buy">
       ${p.available ? `
-        <div class="qty"><button onclick="curQty=Math.max(1,curQty-1);ppUpd()">−</button><span id="ppQty">1</span><button onclick="curQty=Math.min(cur_.stock||99, curQty+1);ppUpd()">+</button></div>
+        <div class="qty"><button onclick="curQty=Math.max(1,curQty-1);ppUpd()">−</button><span id="ppQty">1</span><button onclick="curQty=Math.min((cur_.sizes[curSize]&&cur_.sizes[curSize].stock)||99, curQty+1);ppUpd()">+</button></div>
         <button class="btn btn-p" id="ppAdd" onclick="addToCart(cur_,curSize,curQty)"></button>
       ` : `
         <button class="btn btn-notify" style="flex:1" onclick="openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>
@@ -985,20 +994,32 @@ function ppGal(){const p=cur_,im=p.images,many=im.length>1;$('ppMain').innerHTML
   let x0=null;const m=$('ppMain');m.ontouchstart=e=>x0=e.touches[0].clientX;m.ontouchend=e=>{if(x0===null||!many)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)galTo(curImg+(dx<0?1:-1));x0=null}}
 function galTo(i){const L=cur_.images.length;curImg=(i+L)%L;ppGal()}
 
-function ppUpd(){const p=cur_;if(!$('ppSizes'))return;$('ppSizes').innerHTML=p.sizes.map((s,i)=>`<div class="size ${i===curSize?'on':''}" onclick="curSize=${i};ppUpd()"><b>${sizeLabel(p,s)}</b><div class="pr">${p.disc?`<s class="num">${fmt(s.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,s))} ${esc(cur())}</b></div></div>`).join('');const s=p.sizes[curSize]||{};const tot=sizeFinal(p,s)*curQty;if($('ppQty'))$('ppQty').textContent=curQty;if($('ppAdd')){$('ppAdd').innerHTML=`${p.available?tx('add_cart'):tx('out_of_stock')} — <span class="num">${fmt(tot)} ${esc(cur())}</span>`;$('ppAdd').disabled=!p.available||!p.sizes.length;}if($('stPrice'))$('stPrice').textContent=`${fmt(tot)} ${cur()}`}
+function ppUpd(){const p=cur_;if(!$('ppSizes'))return;
+  $('ppSizes').innerHTML=p.sizes.map((s,i)=>{const out=n(s.stock)<=0;return `<div class="size ${i===curSize?'on':''} ${out?'off':''}" onclick="${out?'':`curSize=${i};ppUpd()`}"><b>${sizeLabel(p,s)}${out?` — ${tx('out_of_stock')}`:''}</b><div class="pr">${p.disc?`<s class="num">${fmt(s.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,s))} ${esc(cur())}</b></div></div>`}).join('');
+  const s=p.sizes[curSize]||{};const sStock=n(s.stock);const sOut=sStock<=0;
+  curQty=Math.max(1,Math.min(curQty,sOut?1:sStock));
+  if($('ppStock')){
+    if(p.available && !sOut && sStock<=5){$('ppStock').style.display='';$('ppStock').textContent=tx('stock_left').replace('{n}',sStock);}
+    else{$('ppStock').style.display='none';}
+  }
+  const tot=sizeFinal(p,s)*curQty;if($('ppQty'))$('ppQty').textContent=curQty;
+  if($('ppAdd')){$('ppAdd').innerHTML=`${(p.available&&!sOut)?tx('add_cart'):tx('out_of_stock')} — <span class="num">${fmt(tot)} ${esc(cur())}</span>`;$('ppAdd').disabled=!p.available||!p.sizes.length||sOut;}
+  if($('stPrice'))$('stPrice').textContent=`${fmt(tot)} ${cur()}`}
 
 let qvP=null,qvS=0;
 function openQV(id){const p=products.find(x=>x.id===id);if(!p)return;qvP=p;qvS=0;qvRender();$('qv').classList.add('on');document.body.style.overflow='hidden'}
 function closeQV(){$('qv').classList.remove('on');document.body.style.overflow=''}
-function qvRender(){const p=qvP;$('qvBody').innerHTML=`<div class="qvg"><div class="im">${p.image?`<img src="${p.image}" alt="">`:''}</div><div class="bd"><div class="eyebrow">${esc(kindLabel(p))}</div><h2>${esc(pf(p,'name'))}</h2><p style="color:var(--muted);font-weight:300;margin-bottom:6px">${esc(pf(p,'desc'))}</p>
-  <div class="sizes">${p.sizes.map((x,i)=>`<div class="size ${i===qvS?'on':''}" onclick="qvS=${i};qvRender()"><b>${sizeLabel(p,x)}</b><div class="pr">${p.disc?`<s class="num">${fmt(x.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,x))} ${esc(cur())}</b></div></div>`).join('')}</div>
+function qvRender(){const p=qvP;const s=p.sizes[qvS]||{};const sOut=n(s.stock)<=0;const stockLine=(p.available&&!sOut&&n(s.stock)<=5)?`<div class="stock-tag" style="font-size:12px;margin:6px 0">${tx('stock_left').replace('{n}',n(s.stock))}</div>`:'';
+  $('qvBody').innerHTML=`<div class="qvg"><div class="im">${p.image?`<img src="${p.image}" alt="">`:''}</div><div class="bd"><div class="eyebrow">${esc(kindLabel(p))}</div><h2>${esc(pf(p,'name'))}</h2><p style="color:var(--muted);font-weight:300;margin-bottom:6px">${esc(pf(p,'desc'))}</p>
+  <div class="sizes">${p.sizes.map((x,i)=>{const out=n(x.stock)<=0;return `<div class="size ${i===qvS?'on':''} ${out?'off':''}" onclick="${out?'':`qvS=${i};qvRender()`}"><b>${sizeLabel(p,x)}${out?` — ${tx('out_of_stock')}`:''}</b><div class="pr">${p.disc?`<s class="num">${fmt(x.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,x))} ${esc(cur())}</b></div></div>`}).join('')}</div>
+  ${stockLine}
   <div class="buy">
-    ${p.available ? `<button class="btn btn-p" onclick="addToCart(qvP,qvS,1);closeQV()" ${p.sizes.length?'':'disabled'}>${tx('add_cart')}</button>` : `<button class="btn btn-notify" onclick="closeQV();openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>`}
+    ${(p.available&&!sOut) ? `<button class="btn btn-p" onclick="addToCart(qvP,qvS,1);closeQV()" ${p.sizes.length?'':'disabled'}>${tx('add_cart')}</button>` : `<button class="btn btn-notify" onclick="closeQV();openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>`}
     <a class="btn-txt" href="#/p/${p.id}" onclick="closeQV()">${tx('view_all')} →</a>
   </div></div></div>`}
 $('qv').addEventListener('click',e=>{if(e.target===$('qv'))closeQV()});
 
-function addToCart(p,si,q){const s=p.sizes[si];if(!s||!p.available)return;const k=p.id+'|'+n(s.ml);const ex=cart.find(c=>c.k===k);if(ex)ex.qty+=q;else cart.push({k,id:p.id,ml:n(s.ml),qty:q,name:p.name,name_en:p.name_en||'',price:n(s.price),image:p.image||'',kind:p.kind});ls.set('sns_cart',cart);renderCart();toast(tx('added'));openCart()}
+function addToCart(p,si,q){const s=p.sizes[si];if(!s||!p.available||n(s.stock)<=0)return;const k=p.id+'|'+n(s.ml);const ex=cart.find(c=>c.k===k);const already=ex?ex.qty:0;const addQty=Math.max(0,Math.min(q,n(s.stock)-already));if(addQty<=0){toast(tx('out_of_stock'));return}if(ex)ex.qty+=addQty;else cart.push({k,id:p.id,ml:n(s.ml),qty:addQty,name:p.name,name_en:p.name_en||'',price:n(s.price),image:p.image||'',kind:p.kind});ls.set('sns_cart',cart);renderCart();toast(tx('added'));openCart()}
 function cartLines(){return cart.map(c=>{const p=products.find(x=>x.id===c.id);const s=p?p.sizes.find(x=>n(x.ml)===n(c.ml)):null;const orig=s?n(s.price):c.price;const fin=p&&s?sizeFinal(p,s):c.price;return {...c,p,orig,fin,name:p?p.name:c.name,name_en:p?(p.name_en||''):c.name_en,image:p?p.image:c.image,label:p&&s?sizeLabel(p,s):(c.ml?`${c.ml} ${tx('ml')}`:tx('set'))}})}
 function promoActive(){if(S.site_promo_on!=='1'||!S.site_promo_code)return null;if(S.site_promo_end&&new Date(S.site_promo_end+'T23:59:59')<new Date())return null;if((promoCode||'').toUpperCase()!==S.site_promo_code.toUpperCase())return null;return {type:S.site_promo_type,val:n(S.site_promo_val),code:S.site_promo_code}}
 function totals(){const L=cartLines();const sub=L.reduce((a,c)=>a+c.fin*c.qty,0),saved=L.reduce((a,c)=>a+(c.orig-c.fin)*c.qty,0);const pr=promoActive();let disc=0,ship=n(S.site_ship);if(pr){if(pr.type==='percent')disc=Math.round(sub*pr.val/100);else if(pr.type==='fixed')disc=Math.min(sub,pr.val);else if(pr.type==='ship')ship=0}if(S.site_free_ship!==''&&sub-disc>=n(S.site_free_ship))ship=0;if(!L.length)ship=0;return {L,sub,saved,disc,ship,total:Math.max(0,sub-disc)+ship,pr}}
@@ -1009,7 +1030,7 @@ function renderCart(){const T=totals();const nq=cart.reduce((a,c)=>a+c.qty,0);$(
     <div class="sum"><div><span>${tx('subtotal')}</span><span class="num">${fmt(T.sub)} ${esc(cur())}</span></div>${T.saved?`<div class="save"><span>${tx('you_save')}</span><span class="num">${fmt(T.saved)}</span></div>`:''}${T.disc?`<div class="save"><span>${tx('discount')} (${esc(T.pr.code)})</span><span class="num">−${fmt(T.disc)}</span></div>`:''}<div><span>${tx('shipping')}</span><span class="num">${T.ship?fmt(T.ship):tx('free')}</span></div><div class="tot"><span>${tx('total')}</span><span class="num">${fmt(T.total)} ${esc(cur())}</span></div></div>
     <a class="btn btn-p" style="width:100%" href="#/checkout" onclick="closeAll()">${tx('checkout')}</a>`:'';
   if($('coSum'))renderCoSum()}
-function cartQty(k,d){const c=cart.find(x=>x.k===k);if(!c)return;c.qty+=d;if(c.qty<=0)cart=cart.filter(x=>x.k!==k);ls.set('sns_cart',cart);renderCart()}
+function cartQty(k,d){const c=cart.find(x=>x.k===k);if(!c)return;const p=products.find(x=>x.id===c.id);const s=p?p.sizes.find(x=>n(x.ml)===n(c.ml)):null;const max=s?n(s.stock):99;c.qty=Math.min(max,c.qty+d);if(c.qty<=0)cart=cart.filter(x=>x.k!==k);ls.set('sns_cart',cart);renderCart()}
 function applyPromo(){promoCode=($('promoIn').value||'').trim();ls.set('sns_promo',promoCode);renderCart();toast(promoActive()?tx('promo_ok'):tx('promo_bad'))}
 
 function viewCheckout(){if(!cart.length){setTimeout(()=>location.hash='#/c/all',0);return''}const sv=ls.get('sns_customer',{});const v=k=>esc(sv[k]||'');
@@ -1073,23 +1094,23 @@ const rawProduct=p=>({id:p.id,name:p.name,name_en:p.name_en||'',kind:p.kind,cate
 
 let editP=null,pImgs=[],pImgsChanged=false;
 function renderPImgs(){$('pImgs').innerHTML=pImgs.map((im,i)=>`<div><img src="${im}" alt="">${i===0?'<small>رئيسية</small>':''}<button onclick="pImgs.splice(${i},1);pImgsChanged=true;renderPImgs()">×</button></div>`).join('')}
-function addSizeRow(ml='',price=''){const d=document.createElement('div');d.className='sizerow';d.innerHTML=`<div class="field"><label>الحجم (مل) — للباقة 0</label><input type="number" class="sz-ml" value="${esc(ml)}"></div><div class="field"><label>السعر</label><input type="number" class="sz-pr" value="${esc(price)}"></div><button class="btn btn-o btn-sm" onclick="this.parentNode.remove()">✕</button>`;$('sizeRows').appendChild(d)}
-function readSizes(){return [...$('sizeRows').querySelectorAll('.sizerow')].map(r=>({ml:n(r.querySelector('.sz-ml').value),price:n(r.querySelector('.sz-pr').value)})).filter(s=>s.price>0)}
+function addSizeRow(ml='',price='',stock=''){const d=document.createElement('div');d.className='sizerow';d.innerHTML=`<div class="field"><label>الحجم (مل) — للباقة 0</label><input type="number" class="sz-ml" value="${esc(ml)}"></div><div class="field"><label>السعر</label><input type="number" class="sz-pr" value="${esc(price)}"></div><div class="field"><label>المخزون</label><input type="number" class="sz-stock" min="0" value="${esc(stock)}" placeholder="10"></div><button class="btn btn-o btn-sm" onclick="this.parentNode.remove()">✕</button>`;$('sizeRows').appendChild(d)}
+function readSizes(){return [...$('sizeRows').querySelectorAll('.sizerow')].map(r=>({ml:n(r.querySelector('.sz-ml').value),price:n(r.querySelector('.sz-pr').value),stock:n(r.querySelector('.sz-stock').value)})).filter(s=>s.price>0)}
 function fillProductSelects(){const cc=cats.filter(c=>c.mode==='category');$('pCat').innerHTML=cc.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');$('pTags').innerHTML=TAGS.map(t=>`<label><input type="checkbox" value="${t[0]}">${t[1]} / ${t[2]}</label>`).join('');const others=products.filter(p=>p.id!==editP);$('pPairs').innerHTML=others.map(p=>`<label><input type="checkbox" value="${p.id}">${esc(p.name)}</label>`).join('')||'<span class="hint">أضيفي منتجات أولاً</span>';$('pBundleItems').innerHTML=others.filter(p=>p.kind!=='bundle').map(p=>`<label><input type="checkbox" value="${p.id}">${esc(p.name)}</label>`).join('')}
 $('pKind').onchange=()=>{$('pBundleWrap').hidden=$('pKind').value!=='bundle';$('pSizesLbl').textContent=$('pKind').value==='bundle'?'سعر الباقة (الحجم 0)':'الأحجام والأسعار'};
 
-function resetProductForm(){editP=null;pImgs=[];pImgsChanged=false;renderPImgs();fillProductSelects();['pName','pNameEn','pDesc','pDescEn','pTop','pMid','pBase'].forEach(i=>$(i).value='');$('pKind').value='perfume';$('pKind').onchange();$('pBadge').value='';$('pBest').value='0';$('pFeat').value='0';$('pAvail').value='1';$('pStock').value='10';$('pDisc').value=0;$('sizeRows').innerHTML='';[100,50,10].forEach(m=>addSizeRow(m,''));$('pfTitle').textContent='إضافة منتج';$('pStatus').textContent=''}
-function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;resetProductForm();editP=id;fillProductSelects();$('pKind').value=p.kind;$('pKind').onchange();$('pCat').value=p.category;$('pName').value=p.name;$('pNameEn').value=p.name_en||'';$('pDesc').value=p.desc||'';$('pDescEn').value=p.desc_en||'';$('pTop').value=p.top||'';$('pMid').value=p.mid||'';$('pBase').value=p.base||'';$('pBadge').value=p.badge||'';$('pBest').value=p.best?'1':'0';$('pFeat').value=p.feat?'1':'0';$('pAvail').value=p.available?'1':'0';$('pStock').value=p.stock!==undefined?p.stock:'10';$('pDisc').value=p.disc;
+function resetProductForm(){editP=null;pImgs=[];pImgsChanged=false;renderPImgs();fillProductSelects();['pName','pNameEn','pDesc','pDescEn','pTop','pMid','pBase'].forEach(i=>$(i).value='');$('pKind').value='perfume';$('pKind').onchange();$('pBadge').value='';$('pBest').value='0';$('pFeat').value='0';$('pAvail').value='1';$('pDisc').value=0;$('sizeRows').innerHTML='';[100,50,10].forEach(m=>addSizeRow(m,'',10));$('pfTitle').textContent='إضافة منتج';$('pStatus').textContent=''}
+function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;resetProductForm();editP=id;fillProductSelects();$('pKind').value=p.kind;$('pKind').onchange();$('pCat').value=p.category;$('pName').value=p.name;$('pNameEn').value=p.name_en||'';$('pDesc').value=p.desc||'';$('pDescEn').value=p.desc_en||'';$('pTop').value=p.top||'';$('pMid').value=p.mid||'';$('pBase').value=p.base||'';$('pBadge').value=p.badge||'';$('pBest').value=p.best?'1':'0';$('pFeat').value=p.feat?'1':'0';$('pAvail').value=p.available?'1':'0';$('pDisc').value=p.disc;
   [...$('pTags').querySelectorAll('input')].forEach(i=>i.checked=p.tags.includes(i.value));[...$('pPairs').querySelectorAll('input')].forEach(i=>i.checked=p.pairs.includes(i.value));[...$('pBundleItems').querySelectorAll('input')].forEach(i=>i.checked=p.bundle_items.includes(i.value));
-  $('sizeRows').innerHTML='';p.sizes.forEach(s=>addSizeRow(s.ml,s.price));pImgs=[...p.images];renderPImgs();$('pfTitle').textContent='تعديل: '+p.name;$('adminM').querySelector('.abox').scrollTo({top:0,behavior:'smooth'})}$('pImgFile').onchange=async e=>{for(const f of [...e.target.files]){if(pImgs.length>=6){toast('الحد الأقصى 6 صور');break}pImgs.push(await shrink(f,500,.6));pImgsChanged=true}renderPImgs();e.target.value=''};
+  $('sizeRows').innerHTML='';p.sizes.forEach(s=>addSizeRow(s.ml,s.price,s.stock));pImgs=[...p.images];renderPImgs();$('pfTitle').textContent='تعديل: '+p.name;$('adminM').querySelector('.abox').scrollTo({top:0,behavior:'smooth'})}$('pImgFile').onchange=async e=>{for(const f of [...e.target.files]){if(pImgs.length>=6){toast('الحد الأقصى 6 صور');break}pImgs.push(await shrink(f,500,.6));pImgsChanged=true}renderPImgs();e.target.value=''};
 const checked=id=>[...$(id).querySelectorAll('input:checked')].map(i=>i.value);
 
 async function saveProduct(){
   const name=$('pName').value.trim();if(!name){toast('اكتب الاسم');return}
   const sizes=readSizes();if(!sizes.length){toast('أضف سعراً واحداً على الأقل');return}
   const old=products.find(x=>x.id===editP);
-  const stockVal=Number($('pStock').value);
-  const isAvail=$('pAvail').value==='1' && stockVal>0;
+  const totalStock=sizes.reduce((a,s)=>a+Math.max(0,n(s.stock)),0);
+  const isAvail=$('pAvail').value==='1' && totalStock>0;
   const wasOut=old && (!old.available || old.stock<=0);
 
   const p=normProduct({
@@ -1100,7 +1121,6 @@ async function saveProduct(){
     category:$('pCat').value,
     badge:$('pBadge').value,
     available:isAvail?'1':'0',
-    stock:stockVal,
     best:$('pBest').value,
     feat:$('pFeat').value,
     disc:$('pDisc').value,
@@ -1145,7 +1165,7 @@ async function pQuick(id,k){
   const p=products.find(x=>x.id===id);
   const wasOut=!p.available || p.stock<=0;
   p[k]=!p[k];
-  if(k==='available' && p.available && p.stock<=0) p.stock=5;
+  if(k==='available' && p.available && p.stock<=0){p.sizes=p.sizes.map(s=>({...s,stock:5}));p.stock=p.sizes.reduce((a,s)=>a+n(s.stock),0);}
   renderPList();
   try{
     await own({action:'upsert',sheet:'products',row:rawProduct(p)});
@@ -1161,7 +1181,7 @@ async function pQuick(id,k){
 }
 
 async function moveProduct(id,dir){const i=products.findIndex(x=>x.id===id),j=i+dir;if(j<0||j>=products.length)return;const a=products[i],b=products[j];[a.order,b.order]=[b.order,a.order];products.sort((x,y)=>x.order-y.order);renderPList();try{await own({action:'upsert',sheet:'products',row:rawProduct(a)});await own({action:'upsert',sheet:'products',row:rawProduct(b)});ls.set('sns_store_cache',null)}catch(e){toast('خطأ في الترتيب')}}
-function renderPList(){$('pCount').textContent=products.length;$('plist').innerHTML=products.length?products.map((p,i)=>`<div class="pitem ${p.available?'':'off'}"><img src="${p.image||''}" alt=""><div><div class="n">${esc(p.name)} <small style="color:var(--muted)">[المخزون: ${p.stock}]</small> ${p.best?' <span class="badge gold" style="font-size:9px">Best</span>':''}${p.feat?' <span class="badge" style="font-size:9px">مميز</span>':''}${p.disc?` <span class="badge sale" style="font-size:9px">−${p.disc}%</span>`:''} ${!p.available?'<span class="badge out" style="font-size:9px">نفد المخزون</span>':''}</div><div class="m">${esc((catById(p.category)||{}).name||'')} · ${p.sizes.map(s=>`${s.ml||'طقم'} ${fmt(s.price)}`).join(' / ')}</div></div>
+function renderPList(){$('pCount').textContent=products.length;$('plist').innerHTML=products.length?products.map((p,i)=>`<div class="pitem ${p.available?'':'off'}"><img src="${p.image||''}" alt=""><div><div class="n">${esc(p.name)} <small style="color:var(--muted)">[المخزون: ${p.stock}]</small> ${p.best?' <span class="badge gold" style="font-size:9px">Best</span>':''}${p.feat?' <span class="badge" style="font-size:9px">مميز</span>':''}${p.disc?` <span class="badge sale" style="font-size:9px">−${p.disc}%</span>`:''} ${!p.available?'<span class="badge out" style="font-size:9px">نفد المخزون</span>':''}</div><div class="m">${esc((catById(p.category)||{}).name||'')} · ${p.sizes.map(s=>`${s.ml||'طقم'} ${fmt(s.price)} (${s.stock})`).join(' / ')}</div></div>
   <div class="acts"><button onclick="moveProduct('${p.id}',-1)" ${i===0?'disabled':''}>▲</button><button onclick="moveProduct('${p.id}',1)" ${i===products.length-1?'disabled':''}>▼</button><button onclick="editProduct('${p.id}')">تعديل</button><button onclick="pQuick('${p.id}','best')">${p.best?'إلغاء Best':'Best'}</button><button onclick="pQuick('${p.id}','feat')">${p.feat?'إلغاء التمييز':'تمييز'}</button><button onclick="pQuick('${p.id}','available')">${p.available?'تحديد كـ نفد':'تحديد كـ متاح'}</button><button style="color:#b42318" onclick="delProduct('${p.id}')">حذف</button></div></div>`).join(''):'<p class="hint">لا توجد منتجات بعد</p>'}
 
 let editC=null,cImg='';
