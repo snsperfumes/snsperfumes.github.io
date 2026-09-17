@@ -12,9 +12,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
 <script>
-/* ======================================================================
-   رابط الـ Web App
-   ====================================================================== */
 const API_URL = 'https://script.google.com/macros/s/AKfycbwlxRSYVcTH1hbiSS-D5ZYjUvkoPepBzQBRS7ZM45SfDNPEwL8EouDaEZR-Re58IDfG5g/exec';
 </script>
 <style>
@@ -63,6 +60,8 @@ a{color:inherit;text-decoration:none}
 .btn-g:hover{border-color:var(--gold);background:rgba(184,147,63,.06)}
 .btn-l{background:var(--beige);color:var(--p)}
 .btn-l:hover{background:var(--champ)}
+.btn-notify{background:rgba(184,147,63,.12);border-color:var(--gold);color:var(--p);font-weight:600}
+.btn-notify:hover{background:var(--gold);color:#fff}
 .btn-sm{padding:9px 16px;font-size:11.5px}
 .btn[disabled]{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 .btn-txt{background:none;border:0;padding:0 0 3px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--p);border-bottom:1px solid var(--champ);border-radius:0;cursor:pointer;font-family:var(--sans)}
@@ -307,7 +306,7 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 .pp .notes div{display:grid;grid-template-columns:90px 1fr;gap:12px;font-size:14px}
 .pp .notes span{font-family:var(--sans);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--a);padding-top:4px}
 [dir=rtl] .pp .notes span{letter-spacing:0;font-size:12px;font-family:var(--sans-ar)}
-.pp .tagsrow{display:flex;gap:8px;flex-wrap:wrap;margin-10px 0 0}
+.pp .tagsrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
 
 .sizes{display:grid;gap:8px;margin:18px 0}
 .size{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:var(--r);padding:13px 16px;cursor:pointer;background:var(--cream);transition:all .2s}
@@ -656,6 +655,24 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 
 <div class="modal" id="qv"><div class="mbox"><button class="mclose" onclick="closeQV()">✕</button><div id="qvBody"></div></div></div>
 
+<!-- مودال إشعار التوفر (Notify Me Modal) -->
+<div class="modal" id="notifyM">
+  <div class="mbox" style="max-width:440px;padding:30px;border-radius:10px">
+    <button class="mclose" onclick="closeNotify()">✕</button>
+    <div class="eyebrow" style="margin-bottom:6px">SNS — Stock Alert</div>
+    <h3 id="notifyProdName" style="font-size:22px;margin-bottom:6px;color:var(--p)"></h3>
+    <p class="hint" style="margin-bottom:18px;line-height:1.6" id="notifyHint">سجلي إيميلك أو رقم موبايلك وهنبعتلك أول ما العطر يتوفر فوراً.</p>
+    <div class="form" style="grid-template-columns:1fr">
+      <div class="field">
+        <label id="notifyLabel">رقم الموبايل أو الإيميل</label>
+        <input id="notifyContact" placeholder="01xxxxxxxxx أو name@gmail.com" dir="ltr">
+      </div>
+      <button class="btn btn-p" id="notifySubmitBtn" onclick="submitNotify()" style="margin-top:6px">تأكيد الإشعار</button>
+    </div>
+    <p class="status" id="notifyStatus" style="margin-top:12px;text-align:center"></p>
+  </div>
+</div>
+
 <div class="modal" id="loginM"><div class="mbox" style="max-width:420px;padding:30px">
   <h2 style="font-size:26px;margin-bottom:14px">Owner login</h2>
   <div class="form" style="grid-template-columns:1fr"><div class="field"><label>Email</label><input id="lEmail" type="email" dir="ltr"></div><div class="field"><label>Password</label><input id="lPass" type="password" dir="ltr" onkeydown="if(event.key==='Enter')doLogin()"></div></div>
@@ -680,7 +697,7 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
         <div class="field"><label>شارة</label><select id="pBadge"><option value="">بدون</option><option>جديد</option><option>إصدار محدود</option><option>هدية مثالية</option><option>مجموعة مختارة</option></select></div>
         <div class="field"><label>الأكثر مبيعاً؟</label><select id="pBest"><option value="0">لا</option><option value="1">نعم</option></select></div>
         <div class="field"><label>مميز في الصفحة الرئيسية؟</label><select id="pFeat"><option value="0">لا</option><option value="1">نعم</option></select></div>
-        <div class="field"><label>متاح؟</label><select id="pAvail"><option value="1">متاح</option><option value="0">نفد</option></select></div>
+        <div class="field"><label>متاح في المخزون؟</label><select id="pAvail"><option value="1">متاح (In Stock)</option><option value="0">نفد (Sold Out - يظهر زر Notify Me)</option></select></div>
         <div class="field"><label>خصم % (0 = بدون)</label><input id="pDisc" type="number" min="0" max="90" value="0"></div>
         <div class="field wide"><label>الطابع العطري (Tags)</label><div class="multi" id="pTags"></div></div>
         <div class="field wide"><label>يتناسب مع (Pairs well with)</label><div class="multi" id="pPairs"></div></div>
@@ -794,6 +811,7 @@ const DTX={
   find_title:['اكتشفي عطرك','Find Your Scent'],find_sub:['اختاري الطابع الأقرب لك','Choose the character closest to you'],
   about_title:['من نحن','Our Story'],contact_title:['تواصل معنا','Contact Us'],contact_sub:['نسعد بمساعدتك في اختيار عطرك','We are happy to help you choose your fragrance'],
   view_all:['عرض الكل','View All'],quick_view:['نظرة سريعة','Quick View'],add_cart:['أضيفي للسلة','Add to Cart'],from:['يبدأ من','From'],out_of_stock:['نفد','Sold Out'],bestseller:['الأكثر مبيعاً','Bestseller'],
+  notify_me:['أعلمني عند التوفر','Notify Me'],notify_ok:['تم تسجيل طلبك! سنرسل لكِ فور توفره','Notification set! We will alert you.'],notify_err:['من فضلك أدخلي رقم الموبايل أو الإيميل','Please enter your phone or email'],
   notes:['الهرم العطري','Fragrance Notes'],top:['الافتتاحية','Top'],heart:['القلب','Heart'],base:['القاعدة','Base'],
   pairs:['يتناسب مع','Pairs Well With'],also_like:['قد يعجبك أيضاً','You May Also Like'],layer_with:['أضيفي الطبقة مع','Layer It With'],complete:['أكملي مجموعتك','Complete Your Scent'],
   bundle_inc:['الباقة تشمل','This set includes'],bundle_orig:['السعر الأصلي','Original total'],bundle_price:['سعر الباقة','Set price'],bundle_save:['توفير','You save'],
@@ -854,7 +872,6 @@ function applyImages(im){
     p.image=a[0]||'';
   });
   
-  // تحديث فوري للصور في الصفحة الحالية دون إعادة تحميل كاملة
   document.querySelectorAll('.pc').forEach(el => {
     const id = el.dataset.id;
     const p = products.find(x => x.id === id);
@@ -900,7 +917,6 @@ function applyData(d){
 }
 
 async function load(){
-  // 1. عرض الكاش فوراً في أجزاء من الثانية
   const c = ls.get('sns_store_cache', null);
   const cachedImgs = await idb.get('images');
   
@@ -918,7 +934,6 @@ async function load(){
     route();
   }
 
-  // 2. تشغيل استدعاء البيانات والصور بالتوازي في نفس اللحظة
   Promise.all([
     api({action:'public'}).then(d => {
       ls.set('sns_store_cache', d);
@@ -965,12 +980,60 @@ $('langBtn').onclick=toggleLang;
 window.addEventListener('scroll',()=>$('hdr').classList.toggle('scrolled',scrollY>30),{passive:true});
 function openMenu(){closeAll();$('menu').classList.add('open');$('ov').classList.add('on');document.body.style.overflow='hidden'}
 function openCart(){closeAll();$('cartD').classList.add('open');$('ov').classList.add('on');document.body.style.overflow='hidden'}
-function closeAll(){['menu','cartD'].forEach(i=>$(i).classList.remove('open'));$('ov').classList.remove('on');document.body.style.overflow=''}
+function closeAll(){['menu','cartD','notifyM'].forEach(i=>$(i).classList.remove('open','on'));$('ov').classList.remove('on');document.body.style.overflow=''}
 $('menuBtn').onclick=openMenu;$('cartBtn').onclick=openCart;$('wishBtn').onclick=()=>location.hash='#/wishlist';
 function toggleSearch(f){$('searchBar').classList.toggle('open',f);if(f)$('searchIn').focus()}
 $('searchBtn').onclick=()=>toggleSearch(!$('searchBar').classList.contains('open'));
 $('searchIn').onkeydown=e=>{if(e.key==='Enter'){const q=$('searchIn').value.trim();if(q){location.hash='#/search/'+encodeURIComponent(q);toggleSearch(false)}}};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAll();closeQV();toggleSearch(false)}});
+
+/* ============ NOTIFY ME FEATURE ============ */
+let notifyProd = null;
+function openNotify(id) {
+  const p = products.find(x => x.id === id);
+  if(!p) return;
+  notifyProd = p;
+  $('notifyProdName').textContent = pf(p, 'name');
+  $('notifyContact').value = '';
+  $('notifyStatus').textContent = '';
+  $('notifyM').classList.add('on');
+  $('ov').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeNotify() {
+  $('notifyM').classList.remove('on');
+  $('ov').classList.remove('on');
+  document.body.style.overflow = '';
+}
+async function submitNotify() {
+  const contact = $('notifyContact').value.trim();
+  if(!contact || contact.length < 5) {
+    $('notifyStatus').className = 'status err';
+    $('notifyStatus').textContent = tx('notify_err');
+    return;
+  }
+  $('notifySubmitBtn').disabled = true;
+  $('notifyStatus').className = 'status';
+  $('notifyStatus').textContent = '…';
+  try {
+    await api({
+      action: 'restock_subscribe',
+      productId: notifyProd.id,
+      productName: notifyProd.name,
+      contact: contact
+    });
+    $('notifyStatus').textContent = tx('notify_ok');
+    setTimeout(() => {
+      closeNotify();
+      $('notifySubmitBtn').disabled = false;
+      toast(tx('notify_ok'));
+    }, 1200);
+  } catch(e) {
+    $('notifyStatus').className = 'status err';
+    $('notifyStatus').textContent = tx('err_generic');
+    $('notifySubmitBtn').disabled = false;
+  }
+}
 
 /* ============ PRODUCT CARD ============ */
 function card(p){
@@ -983,7 +1046,8 @@ function card(p){
       <div class="qv" onclick="event.stopPropagation();openQV('${p.id}')">${tx('quick_view')}</div></div>
     <div class="body"><div class="cat">${esc(kindLabel(p))}</div><h3><a href="#/p/${p.id}">${esc(pf(p,'name'))}</a></h3><p class="d">${esc(pf(p,'desc'))}</p>
       <div class="price">${p.sizes.length>1?`<small>${tx('from')}</small>`:''}<b class="num">${fmt(mf)} ${esc(cur())}</b>${p.disc?`<s class="num">${fmt(mo)}</s>`:''}</div>
-      <button class="btn btn-o btn-sm add" onclick="quickAdd('${p.id}')" ${p.available&&p.sizes.length?'':'disabled'}>${p.available?tx('add_cart'):tx('out_of_stock')}</button></div></article>`;
+      ${p.available ? `<button class="btn btn-o btn-sm add" onclick="quickAdd('${p.id}')" ${p.sizes.length?'':'disabled'}>${tx('add_cart')}</button>` : `<button class="btn btn-notify btn-sm add" onclick="openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>`}
+    </div></article>`;
 }
 const grid=list=>`<div class="pgrid">${list.map(card).join('')}</div>`;
 function quickAdd(id){const p=products.find(x=>x.id===id);if(!p)return;if(p.sizes.length>1){openQV(id);return}addToCart(p,0,1)}
@@ -1062,18 +1126,32 @@ function viewProduct(id){const p=products.find(x=>x.id===id);if(!p)return viewHo
     ${(p.top||p.mid||p.base)?`<div class="notes">${p.top?`<div><span>${tx('top')}</span><div>${esc(pf(p,'top'))}</div></div>`:''}${p.mid?`<div><span>${tx('heart')}</span><div>${esc(pf(p,'mid'))}</div></div>`:''}${p.base?`<div><span>${tx('base')}</span><div>${esc(pf(p,'base'))}</div></div>`:''}</div>`:''}
     ${bitems.length?`<div class="bundle-box"><h4>${tx('bundle_inc')}</h4>${bitems.map(b=>`<div class="it"><a href="#/p/${b.id}">${esc(pf(b,'name'))}</a><span class="num">${fmt(minOrig(b))}</span></div>`).join('')}<div class="save"><span>${tx('bundle_orig')}: <s class="num">${fmt(bundleOrig(p))}</s></span><span>${tx('bundle_price')}: <span class="num">${fmt(minFinal(p))}</span></span></div>${bundleOrig(p)>minFinal(p)?`<div class="save"><span>${tx('bundle_save')}</span><b class="num">${fmt(bundleOrig(p)-minFinal(p))} ${esc(cur())}</b></div>`:''}</div>`:''}
     <div class="sizes" id="ppSizes"></div>
-    <div class="buy"><div class="qty"><button onclick="curQty=Math.max(1,curQty-1);ppUpd()">−</button><span id="ppQty">1</span><button onclick="curQty++;ppUpd()">+</button></div><button class="btn btn-p" id="ppAdd" onclick="addToCart(cur_,curSize,curQty)"></button><button class="wbtn ${wish.includes(p.id)?'on':''}" data-wish="${p.id}" onclick="toggleWish('${p.id}')" aria-label="wishlist">${SVG.heart}</button></div>
+    <div class="buy">
+      ${p.available ? `
+        <div class="qty"><button onclick="curQty=Math.max(1,curQty-1);ppUpd()">−</button><span id="ppQty">1</span><button onclick="curQty++;ppUpd()">+</button></div>
+        <button class="btn btn-p" id="ppAdd" onclick="addToCart(cur_,curSize,curQty)"></button>
+      ` : `
+        <button class="btn btn-notify" style="flex:1" onclick="openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>
+      `}
+      <button class="wbtn ${wish.includes(p.id)?'on':''}" data-wish="${p.id}" onclick="toggleWish('${p.id}')" aria-label="wishlist">${SVG.heart}</button>
+    </div>
     ${sf('site_eta')?`<p class="hint" style="margin-top:12px">${tx('track_eta')}: ${esc(sf('site_eta'))}</p>`:''}
   </div></div>
   ${recoPairs.length?`<div class="reco"><h2>${tx('pairs')}</h2>${grid(recoPairs)}</div>`:''}
   ${oils.length?`<div class="reco"><h2>${tx('layer_with')}</h2>${grid(oils)}</div>`:''}
   ${perfumes.length?`<div class="reco"><h2>${tx('complete')}</h2>${grid(perfumes)}</div>`:''}
   ${same.length?`<div class="reco"><h2>${tx('also_like')}</h2>${grid(same)}</div>`:''}</div>`}
-function initProduct(){if(!cur_||!$('ppMain'))return;ppGal();$('stickyBuy').innerHTML=`<div style="flex:1"><div style="font-family:var(--serif);font-size:16px">${esc(pf(cur_,'name'))}</div><b class="num" id="stPrice"></b></div><button class="btn btn-p btn-sm" onclick="addToCart(cur_,curSize,curQty)">${tx('add_cart')}</button>`;$('stickyBuy').classList.add('show');document.body.classList.add('has-sticky');ppUpd()}
+function initProduct(){if(!cur_||!$('ppMain'))return;ppGal();
+  if(cur_.available) {
+    $('stickyBuy').innerHTML=`<div style="flex:1"><div style="font-family:var(--serif);font-size:16px">${esc(pf(cur_,'name'))}</div><b class="num" id="stPrice"></b></div><button class="btn btn-p btn-sm" onclick="addToCart(cur_,curSize,curQty)">${tx('add_cart')}</button>`;
+  } else {
+    $('stickyBuy').innerHTML=`<div style="flex:1"><div style="font-family:var(--serif);font-size:16px">${esc(pf(cur_,'name'))}</div><b class="num">${tx('out_of_stock')}</b></div><button class="btn btn-notify btn-sm" onclick="openNotify('${cur_.id}')">🔔 ${tx('notify_me')}</button>`;
+  }
+  $('stickyBuy').classList.add('show');document.body.classList.add('has-sticky');ppUpd()}
 function ppGal(){const p=cur_,im=p.images,many=im.length>1;$('ppMain').innerHTML=(im[curImg]?`<img src="${im[curImg]}" alt="${esc(pf(p,'name'))}">`:`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:80px;color:var(--champ)">${esc(S.site_brand.slice(0,3))}</div>`)+(many?`<button class="arr l" onclick="galTo(curImg-1)">‹</button><button class="arr r" onclick="galTo(curImg+1)">›</button>`:'');$('ppThumbs').innerHTML=many?im.map((x,i)=>`<img src="${x}" class="${i===curImg?'on':''}" onclick="galTo(${i})" alt="">`).join(''):'';
   let x0=null;const m=$('ppMain');m.ontouchstart=e=>x0=e.touches[0].clientX;m.ontouchend=e=>{if(x0===null||!many)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)galTo(curImg+(dx<0?1:-1));x0=null}}
 function galTo(i){const L=cur_.images.length;curImg=(i+L)%L;ppGal()}
-function ppUpd(){const p=cur_;if(!$('ppSizes'))return;$('ppSizes').innerHTML=p.sizes.map((s,i)=>`<div class="size ${i===curSize?'on':''}" onclick="curSize=${i};ppUpd()"><b>${sizeLabel(p,s)}</b><div class="pr">${p.disc?`<s class="num">${fmt(s.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,s))} ${esc(cur())}</b></div></div>`).join('');const s=p.sizes[curSize]||{};const tot=sizeFinal(p,s)*curQty;$('ppQty').textContent=curQty;$('ppAdd').innerHTML=`${p.available?tx('add_cart'):tx('out_of_stock')} — <span class="num">${fmt(tot)} ${esc(cur())}</span>`;$('ppAdd').disabled=!p.available||!p.sizes.length;if($('stPrice'))$('stPrice').textContent=`${fmt(tot)} ${cur()}`}
+function ppUpd(){const p=cur_;if(!$('ppSizes'))return;$('ppSizes').innerHTML=p.sizes.map((s,i)=>`<div class="size ${i===curSize?'on':''}" onclick="curSize=${i};ppUpd()"><b>${sizeLabel(p,s)}</b><div class="pr">${p.disc?`<s class="num">${fmt(s.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,s))} ${esc(cur())}</b></div></div>`).join('');const s=p.sizes[curSize]||{};const tot=sizeFinal(p,s)*curQty;if($('ppQty'))$('ppQty').textContent=curQty;if($('ppAdd')){$('ppAdd').innerHTML=`${p.available?tx('add_cart'):tx('out_of_stock')} — <span class="num">${fmt(tot)} ${esc(cur())}</span>`;$('ppAdd').disabled=!p.available||!p.sizes.length;}if($('stPrice'))$('stPrice').textContent=`${fmt(tot)} ${cur()}`}
 
 /* ---- QUICK VIEW ---- */
 let qvP=null,qvS=0;
@@ -1081,7 +1159,10 @@ function openQV(id){const p=products.find(x=>x.id===id);if(!p)return;qvP=p;qvS=0
 function closeQV(){$('qv').classList.remove('on');document.body.style.overflow=''}
 function qvRender(){const p=qvP;$('qvBody').innerHTML=`<div class="qvg"><div class="im">${p.image?`<img src="${p.image}" alt="">`:''}</div><div class="bd"><div class="eyebrow">${esc(kindLabel(p))}</div><h2>${esc(pf(p,'name'))}</h2><p style="color:var(--muted);font-weight:300;margin-bottom:6px">${esc(pf(p,'desc'))}</p>
   <div class="sizes">${p.sizes.map((x,i)=>`<div class="size ${i===qvS?'on':''}" onclick="qvS=${i};qvRender()"><b>${sizeLabel(p,x)}</b><div class="pr">${p.disc?`<s class="num">${fmt(x.price)}</s>`:''}<b class="num">${fmt(sizeFinal(p,x))} ${esc(cur())}</b></div></div>`).join('')}</div>
-  <div class="buy"><button class="btn btn-p" onclick="addToCart(qvP,qvS,1);closeQV()" ${p.available&&p.sizes.length?'':'disabled'}>${p.available?tx('add_cart'):tx('out_of_stock')}</button><a class="btn-txt" href="#/p/${p.id}" onclick="closeQV()">${tx('view_all')} →</a></div></div></div>`}
+  <div class="buy">
+    ${p.available ? `<button class="btn btn-p" onclick="addToCart(qvP,qvS,1);closeQV()" ${p.sizes.length?'':'disabled'}>${tx('add_cart')}</button>` : `<button class="btn btn-notify" onclick="closeQV();openNotify('${p.id}')">🔔 ${tx('notify_me')}</button>`}
+    <a class="btn-txt" href="#/p/${p.id}" onclick="closeQV()">${tx('view_all')} →</a>
+  </div></div></div>`}
 $('qv').addEventListener('click',e=>{if(e.target===$('qv'))closeQV()});
 
 /* ============ CART ============ */
@@ -1162,13 +1243,57 @@ function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;resetP
 $('pImgFile').onchange=async e=>{for(const f of [...e.target.files]){if(pImgs.length>=6){toast('الحد الأقصى 6 صور');break}pImgs.push(await shrink(f,500,.6));pImgsChanged=true}renderPImgs();e.target.value=''};
 const checked=id=>[...$(id).querySelectorAll('input:checked')].map(i=>i.value);
 async function saveProduct(){const name=$('pName').value.trim();if(!name){toast('اكتبي الاسم');return}const sizes=readSizes();if(!sizes.length){toast('أضيفي سعر واحد على الأقل');return}const old=products.find(x=>x.id===editP);
+  const wasOut = old && !old.available;
+  const isNowAvail = $('pAvail').value === '1';
+
   const p=normProduct({id:editP||uid(),name,name_en:$('pNameEn').value.trim(),kind:$('pKind').value,category:$('pCat').value,badge:$('pBadge').value,available:$('pAvail').value,best:$('pBest').value,feat:$('pFeat').value,disc:$('pDisc').value,desc:$('pDesc').value.trim(),desc_en:$('pDescEn').value.trim(),top:$('pTop').value.trim(),mid:$('pMid').value.trim(),base:$('pBase').value.trim(),sizes:JSON.stringify(sizes),tags:checked('pTags').join(','),pairs:checked('pPairs').join(','),bundle_items:checked('pBundleItems').join(','),order:old?old.order:(products.length?Math.max(...products.map(x=>x.order))+1:1),created:old?old.created:Date.now(),images:pImgs});
-  $('pStatus').textContent='جاري الحفظ…';try{await own({action:'upsert',sheet:'products',row:rawProduct(p)});if(pImgsChanged||!old){await own({action:'product_images',id:p.id,images:pImgs});imgMap[p.id]=[...pImgs];await idb.set('images',{products:imgMap,hero:heroImg,about_img:aboutImg,img_ver:'local'})}if(old)products[products.indexOf(old)]=p;else products.push(p);ls.set('sns_store_cache',null);resetProductForm();renderPList();$('pStatus').textContent='';toast('تم الحفظ')}catch(e){$('pStatus').textContent='خطأ: '+e.message}}
+  $('pStatus').textContent='جاري الحفظ…';
+  try{
+    await own({action:'upsert',sheet:'products',row:rawProduct(p)});
+    if(pImgsChanged||!old){
+      await own({action:'product_images',id:p.id,images:pImgs});
+      imgMap[p.id]=[...pImgs];
+      await idb.set('images',{products:imgMap,hero:heroImg,about_img:aboutImg,img_ver:'local'});
+    }
+    
+    // فحص إرسال الإشعارات لو المنتج رجع متاح
+    if (wasOut && isNowAvail) {
+      own({action:'check_restock', productId: p.id, productName: p.name}).catch(e=>{});
+    }
+
+    if(old)products[products.indexOf(old)]=p;else products.push(p);
+    ls.set('sns_store_cache',null);
+    resetProductForm();
+    renderPList();
+    $('pStatus').textContent='';
+    toast('تم الحفظ');
+  }catch(e){
+    $('pStatus').textContent='خطأ: '+e.message;
+  }
+}
+
 async function delProduct(id){if(!confirm('حذف المنتج نهائياً؟'))return;try{await own({action:'delete',sheet:'products',id});await own({action:'product_images',id,images:[]});products=products.filter(p=>p.id!==id);ls.set('sns_store_cache',null);renderPList();toast('تم الحذف')}catch(e){toast('خطأ: '+e.message)}}
-async function pQuick(id,k){const p=products.find(x=>x.id===id);p[k]=!p[k];renderPList();try{await own({action:'upsert',sheet:'products',row:rawProduct(p)});ls.set('sns_store_cache',null)}catch(e){p[k]=!p[k];renderPList();toast('خطأ')}}
+async function pQuick(id,k){
+  const p=products.find(x=>x.id===id);
+  const wasOut = !p.available;
+  p[k]=!p[k];
+  renderPList();
+  try{
+    await own({action:'upsert',sheet:'products',row:rawProduct(p)});
+    ls.set('sns_store_cache',null);
+    if(k === 'available' && wasOut && p.available) {
+      own({action:'check_restock', productId: p.id, productName: p.name}).catch(e=>{});
+    }
+  }catch(e){
+    p[k]=!p[k];
+    renderPList();
+    toast('خطأ');
+  }
+}
+
 async function moveProduct(id,dir){const i=products.findIndex(x=>x.id===id),j=i+dir;if(j<0||j>=products.length)return;const a=products[i],b=products[j];[a.order,b.order]=[b.order,a.order];products.sort((x,y)=>x.order-y.order);renderPList();try{await own({action:'upsert',sheet:'products',row:rawProduct(a)});await own({action:'upsert',sheet:'products',row:rawProduct(b)});ls.set('sns_store_cache',null)}catch(e){toast('خطأ في الترتيب')}}
-function renderPList(){$('pCount').textContent=products.length;$('plist').innerHTML=products.length?products.map((p,i)=>`<div class="pitem ${p.available?'':'off'}"><img src="${p.image||''}" alt=""><div><div class="n">${esc(p.name)} <small style="color:var(--muted)">${p.kind==='bundle'?'باقة':p.kind==='oil'?'زيت':''}</small>${p.best?' <span class="badge gold" style="font-size:9px">Best</span>':''}${p.feat?' <span class="badge" style="font-size:9px">مميز</span>':''}${p.disc?` <span class="badge sale" style="font-size:9px">−${p.disc}%</span>`:''}</div><div class="m">${esc((catById(p.category)||{}).name||'')} · ${p.sizes.map(s=>`${s.ml||'طقم'} ${fmt(s.price)}`).join(' / ')}</div></div>
-  <div class="acts"><button onclick="moveProduct('${p.id}',-1)" ${i===0?'disabled':''}>▲</button><button onclick="moveProduct('${p.id}',1)" ${i===products.length-1?'disabled':''}>▼</button><button onclick="editProduct('${p.id}')">تعديل</button><button onclick="pQuick('${p.id}','best')">${p.best?'إلغاء Best':'Best'}</button><button onclick="pQuick('${p.id}','feat')">${p.feat?'إلغاء التمييز':'تمييز'}</button><button onclick="pQuick('${p.id}','available')">${p.available?'إخفاء':'إظهار'}</button><button style="color:#b42318" onclick="delProduct('${p.id}')">حذف</button></div></div>`).join(''):'<p class="hint">لا توجد منتجات بعد</p>'}
+function renderPList(){$('pCount').textContent=products.length;$('plist').innerHTML=products.length?products.map((p,i)=>`<div class="pitem ${p.available?'':'off'}"><img src="${p.image||''}" alt=""><div><div class="n">${esc(p.name)} <small style="color:var(--muted)">${p.kind==='bundle'?'باقة':p.kind==='oil'?'زيت':''}</small>${p.best?' <span class="badge gold" style="font-size:9px">Best</span>':''}${p.feat?' <span class="badge" style="font-size:9px">مميز</span>':''}${p.disc?` <span class="badge sale" style="font-size:9px">−${p.disc}%</span>`:''} ${!p.available?'<span class="badge out" style="font-size:9px">نفد المخزون</span>':''}</div><div class="m">${esc((catById(p.category)||{}).name||'')} · ${p.sizes.map(s=>`${s.ml||'طقم'} ${fmt(s.price)}`).join(' / ')}</div></div>
+  <div class="acts"><button onclick="moveProduct('${p.id}',-1)" ${i===0?'disabled':''}>▲</button><button onclick="moveProduct('${p.id}',1)" ${i===products.length-1?'disabled':''}>▼</button><button onclick="editProduct('${p.id}')">تعديل</button><button onclick="pQuick('${p.id}','best')">${p.best?'إلغاء Best':'Best'}</button><button onclick="pQuick('${p.id}','feat')">${p.feat?'إلغاء التمييز':'تمييز'}</button><button onclick="pQuick('${p.id}','available')">${p.available?'تحديد كـ نفد':'تحديد كـ متاح'}</button><button style="color:#b42318" onclick="delProduct('${p.id}')">حذف</button></div></div>`).join(''):'<p class="hint">لا توجد منتجات بعد</p>'}
 
 /* categories */
 let editC=null,cImg='';
