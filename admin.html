@@ -915,18 +915,19 @@ function renderAlerts() {
     const isEmail = contactStr.includes('@');
     const wa = contactStr.replace(/\D/g,'').replace(/^0/,'20');
     const isPending = String(a.status || '').trim() === 'pending';
+    const wpMsg = `Hello darling! ✨ Great news from SNS — Beyond the Senses. The fragrance you've been waiting for, "${a.productName}", is officially back in stock! You can claim yours here: https://snsperfumes.vercel.app/#/p/${a.productId}`;
     
     return `<tr>
       <td class="num">${i+1}</td>
       <td><b>${esc(a.productName)}</b></td>
       <td class="num">
         ${isEmail ? `<a href="mailto:${esc(contactStr)}" style="color:var(--royal);direction:ltr;display:inline-block">${esc(contactStr)}</a>` 
-                  : `<a href="https://wa.me/${wa}" target="_blank" style="color:var(--royal)">${esc(contactStr)}</a>`}
+                  : `<a href="https://wa.me/${wa}?text=${encodeURIComponent(wpMsg)}" target="_blank" style="color:var(--royal)">${esc(contactStr)}</a>`}
       </td>
       <td><span class="tag ${isPending ? 'part' : 'paid'}">${isPending ? 'في الانتظار' : 'تم الإشعار'}</span></td>
       <td class="num">${esc(a.date)}</td>
       <td class="no-print">
-        ${!isEmail && wa ? `<a class="btn btn-light btn-sm" href="https://wa.me/${wa}?text=${encodeURIComponent('أهلاً بكِ، عطر ' + a.productName + ' متوفر الآن لدى SNS! ✨')}" target="_blank">واتساب</a>` : '—'}
+        ${!isEmail && wa ? `<a class="btn btn-light btn-sm" href="https://wa.me/${wa}?text=${encodeURIComponent(wpMsg)}" target="_blank">واتساب</a>` : '—'}
       </td>
     </tr>`;
   }).join('') : `<tr><td colspan="6" class="empty">لا توجد طلبات تنبيه مسجلة بعد</td></tr>`;
