@@ -287,6 +287,12 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
   .pgrid{grid-template-columns:repeat(2,1fr);gap:16px 10px}
   .pc h3{font-size:16px}
   .pc .price b{font-size:13.5px}
+  .toolbar{align-items:stretch}
+  .toolbar .sp{display:none}
+  .toolbar .filters{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+  .toolbar .filters select{width:100%;font-size:11px;padding:8px 4px}
+  .co{grid-template-columns:1fr;gap:20px}
+  .co .box.sum-box{position:static;top:auto}
 }
 @media(max-width:400px){
   .cats{grid-template-columns:1fr 1fr;gap:8px}
@@ -307,6 +313,7 @@ footer .fb p{font-size:13px;font-weight:300;color:rgba(253,251,247,.6);max-width
 .toolbar select,.toolbar input{border:1px solid var(--line);background:var(--cream);border-radius:var(--r);padding:9px 12px;font-size:13px}
 .toolbar .sp{flex:1}
 .toolbar .chips{justify-content:flex-start}
+.toolbar .filters{display:flex;gap:10px}
 
 .pp{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,5vw,64px);align-items:start;padding-top:10px}
 .pp .gal{position:sticky;top:90px}
@@ -962,9 +969,11 @@ let listBase=[];
 function listShell(title,sub,base){listBase=base;const sizes=[...new Set(base.flatMap(p=>p.sizes.map(s=>n(s.ml)).filter(Boolean)))].sort((a,b)=>a-b);
   return `<div class="wrap"><div class="cat-head"><h1>${esc(title)}</h1>${sub?`<p>${esc(sub)}</p>`:''}<div class="n" id="lCount"></div></div>
   <div class="toolbar"><div class="chips" id="tagChips">${TAGS.filter(t=>base.some(p=>p.tags.includes(t[0]))).map(t=>`<button class="chip" data-t="${t[0]}" onclick="this.classList.toggle('on');applyFilters()">${esc(tagName(t[0]))}</button>`).join('')}</div><div class="sp"></div>
-    <select id="fSize" onchange="applyFilters()"><option value="">${tx('filter_size')}</option>${sizes.map(m=>`<option value="${m}">${m} ${tx('ml')}</option>`).join('')}</select>
-    <select id="fAvail" onchange="applyFilters()"><option value="">${tx('filter_all')}</option><option value="1">${tx('filter_avail')}</option></select>
-    <select id="fSort" onchange="applyFilters()"><option value="feat">${tx('sort_feat')}</option><option value="new">${tx('sort_new')}</option><option value="lo">${tx('sort_lo')}</option><option value="hi">${tx('sort_hi')}</option></select></div>
+    <div class="filters">
+      <select id="fSize" onchange="applyFilters()"><option value="">${tx('filter_size')}</option>${sizes.map(m=>`<option value="${m}">${m} ${tx('ml')}</option>`).join('')}</select>
+      <select id="fAvail" onchange="applyFilters()"><option value="">${tx('filter_all')}</option><option value="1">${tx('filter_avail')}</option></select>
+      <select id="fSort" onchange="applyFilters()"><option value="feat">${tx('sort_feat')}</option><option value="new">${tx('sort_new')}</option><option value="lo">${tx('sort_lo')}</option><option value="hi">${tx('sort_hi')}</option></select>
+    </div></div>
   <div id="lGrid"></div></div>`}
 function applyFilters(){if(!$('lGrid'))return;const tags=[...document.querySelectorAll('#tagChips .chip.on')].map(b=>b.dataset.t),sz=n($('fSize').value),av=$('fAvail').value,so=$('fSort').value;
   let l=listBase.filter(p=>(!tags.length||tags.every(t=>p.tags.includes(t)))&&(!sz||p.sizes.some(s=>n(s.ml)===sz))&&(!av||p.available));
